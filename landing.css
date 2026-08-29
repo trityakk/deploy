@@ -240,6 +240,10 @@
 .tools-grid .tool-num{font-size:10px}
 .tools-grid .tool-name{font-size:13px;margin-bottom:8px}
 .tools-grid .tool-desc{font-size:11px;line-height:1.6}
+@media (hover:hover) and (pointer:fine){
+  .tools-grid .tool-img{transform:perspective(800px) translateZ(0);transform-style:preserve-3d;transition:transform .42s var(--ease-premium),filter .35s ease}
+  .tools-grid .tool:hover .tool-img{transform:perspective(800px) rotateX(5deg) rotateY(-7deg) translate3d(3px,-4px,12px) scale(1.16);filter:drop-shadow(0 10px 16px rgba(0,0,0,.28))}
+}
 
 /* Контрастна CTA-кнопка всередині картки ціни */
 #pricing .pricing3-main .pricing3-cta{
