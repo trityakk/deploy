@@ -114,16 +114,10 @@
   .pricing3-card:hover .pricing3-cta{transform:translateY(-2px);box-shadow:0 14px 34px rgba(240,180,41,.38)}
   .pricing3-feat li{transition:color .28s ease}
   .pricing3-feat-text{display:inline-block;transition:transform .28s var(--ease-premium),color .28s ease}
-  .pricing3-card:hover .pricing3-feat-text{animation:pricing-line-nudge .48s var(--ease-premium) both}
-  .pricing3-card:hover .pricing3-feat li:nth-child(2) .pricing3-feat-text{animation-delay:.04s}
-  .pricing3-card:hover .pricing3-feat li:nth-child(3) .pricing3-feat-text{animation-delay:.08s}
-  .pricing3-card:hover .pricing3-feat li:nth-child(4) .pricing3-feat-text{animation-delay:.12s}
-  .pricing3-card:hover .pricing3-feat li:nth-child(5) .pricing3-feat-text{animation-delay:.16s}
-  .pricing3-card:hover .pricing3-feat li:nth-child(6) .pricing3-feat-text{animation-delay:.20s}
-  .pricing3-card:hover .pricing3-feat li:nth-child(7) .pricing3-feat-text{animation-delay:.24s}
-  .pricing3-card:hover .pricing3-feat li:nth-child(8) .pricing3-feat-text{animation-delay:.28s}
-  .pricing3-feat li:hover .pricing3-feat-text{transform:translateX(5px);color:#fff}
-  @keyframes pricing-line-nudge{0%{transform:translateX(0);color:inherit}52%{transform:translateX(7px);color:#fff}100%{transform:translateX(0);color:inherit}}
+  .pricing3-feat-text{position:relative}
+  .pricing3-feat-text::after{content:'';position:absolute;left:0;right:100%;bottom:-3px;height:1px;border-radius:2px;background:linear-gradient(90deg,var(--g),rgba(247,201,90,.15),transparent);opacity:0;transition:right .35s var(--ease-premium),opacity .25s ease}
+  .pricing3-feat li:hover .pricing3-feat-text{transform:translateX(4px);color:#fff;text-shadow:0 0 14px rgba(240,180,41,.24)}
+  .pricing3-feat li:hover .pricing3-feat-text::after{right:0;opacity:.9}
 }
 .author-fails{margin-top:54px}
 .fail-label{font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:2.2px;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:18px}
