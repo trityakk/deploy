@@ -260,6 +260,14 @@
     document.body.appendChild(searchResultsEl);
   }
 
+  // The course markup is inserted inside .cabinet__main. Moving the stats
+  // overlay to <body> lets its fixed/z-index layer sit above the sidebar,
+  // which is its own stacking context.
+  var statsOverlayEl = document.getElementById('statsOverlay');
+  if (statsOverlayEl) {
+    document.body.appendChild(statsOverlayEl);
+  }
+
   var displayName = loadProgress('sa_display_name', '');
   var nameEl = document.getElementById('sidebarName');
   nameEl.textContent = displayName || user;
