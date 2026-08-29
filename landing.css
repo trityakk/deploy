@@ -236,6 +236,7 @@
   #cabinet-preview .cab-topbar__url{font-size:8px;padding:4px 10px}
 }
 #author .fail-card:hover{border-color:transparent;background:rgba(255,255,255,.045);box-shadow:0 16px 34px rgba(0,0,0,.2)}
+#author .fail-card:hover{border-left-color:rgba(240,180,41,.9)}
 #author .fail-card{transform-style:preserve-3d}
 @media (hover:hover) and (pointer:fine){
   #author .fail-card-emoji{transform:translateZ(0) scale(1);transition:transform .42s var(--ease-premium),filter .35s ease}
