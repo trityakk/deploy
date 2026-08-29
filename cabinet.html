@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Навчальна платформа — Кабінет</title>
+<link rel="stylesheet" href="styles-glass.css?v=143">
+<link rel="icon" type="image/svg+xml" href="photo/logo.svg">
+</head>
+<body class="cabinet">
+
+<div class="modal" id="cabinetLoginModal">
+    <div class="modal__overlay"></div>
+    <div class="modal__card">
+        <div class="modal__logo">Навчальна <b>платформа</b></div>
+        <h2 class="modal__title">Увійти до кабінету</h2>
+        <p class="modal__desc">Введіть логін та пароль, які ви отримали після оплати</p>
+        <form class="login-form" onsubmit="return doLogin(event)">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="cabinetLoginInput" placeholder="you@example.com" autocomplete="username" required>
+                <small style="display:block;margin-top:6px;color:rgba(255,255,255,.55);font-size:12px;line-height:1.4">Введіть email, який ви вказали під час оплати.</small>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="cabinetPassInput" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="login-submit">Увійти</button>
+            <div class="login-error" id="cabinetLoginError">Невірний логін або пароль</div>
+        </form>
+        <div class="cabinet-no-access" id="cabinetNoAccess" style="display:none">
+            <div class="cabinet-no-access__msg">У вас поки немає доступу до курсу.</div>
+            <div class="cabinet-no-access__sub">Щоб отримати доступ, придбайте курс.</div>
+            <a href="https://secure.wayforpay.com/payment/startamazonpayment" target="_blank" class="cabinet-no-access__buy">🟢 Купити курс</a>
+            <a href="index.html" class="cabinet-no-access__back">← Повернутись на головну</a>
+        </div>
+        <div class="modal__footer">Пароль було надіслано на пошту після оплати</div>
+    </div>
+</div>
+
+<aside class="sidebar open" id="sidebar">
+<div class="sidebar__header">
+<a href="#" class="sidebar__logo" onclick="event.preventDefault();showOverview()"><span class="sidebar__logo-text"><span>Навчальна</span><b>платформа</b></span></a>
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Перемкнути тему">
+<svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="4.2" y1="4.2" x2="5.9" y2="5.9"/><line x1="18.1" y1="18.1" x2="19.8" y2="19.8"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/><line x1="4.2" y1="19.8" x2="5.9" y2="18.1"/><line x1="18.1" y1="5.9" x2="19.8" y2="4.2"/></svg>
+<svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.6 2.6c.3 0 .5.3.4.6-1.4 3-.9 6.7 1.5 9.1 2.4 2.4 6.1 2.9 9.1 1.5.3-.1.6.1.6.4 0 .1 0 .2-.1.3A10 10 0 1 1 12.3 2.6c.1 0 .2 0 .3 0z"/></svg>
+</button>
+<button class="sidebar__toggle" onclick="toggleSidebar()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18"/></svg>
+</button>
+</div>
+<div class="sidebar__user">
+<div class="sidebar__avatar" id="sidebarAvatar"><img id="avatarImg" src="" alt="Avatar"></div>
+<div class="sidebar__name-wrap"><div class="sidebar__name" id="sidebarName" spellcheck="false">Користувач</div>
+<button class="sidebar__name-edit" id="sidebarNameEdit" onclick="document.getElementById('sidebarName').click();return false" data-tip="Редагувати ім'я">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+</button>
+</div>
+<button class="sidebar__logout" onclick="doLogout()" data-tip="Вийти з кабінету">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+</button>
+</div>
+<div class="sidebar__progress" id="sidebarProgress" onclick="showStatsPanel()" role="button" tabindex="0" data-tip="Натисни, щоб переглянути статистику">
+<div class="sidebar__progress-label">
+<span>Прогрес курсу</span>
+<span class="sidebar__progress-count" id="progressCount">0 / 39</span>
+</div>
+<div class="sidebar__progress-bar"><div class="sidebar__progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+<div class="sidebar__search-wrap" id="sidebarSearchWrap">
+<svg class="sidebar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" id="sidebarSearch" class="sidebar__search-input" placeholder="Пошук по курсу..." oninput="searchContent(this.value)" onkeydown="if(event.key==='Escape'){this.value='';searchContent('');this.blur()}">
+<button type="button" class="sidebar__search-clear" id="sidebarSearchClear" onclick="clearSidebarSearch()" aria-label="Закрити пошук">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+<div class="sidebar__search-results" id="searchResults"></div>
+</div>
+<div class="sidebar__bookmarks-link" id="bookmarksLink" onclick="showBookmarksPanel()" style="display:none">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+<span>Мої закладки</span>
+<span class="sidebar__bookmarks-count" id="bookmarksCount">0</span>
+</div>
+<button class="continue-reading" id="continueReadingBtn" onclick="continueReading()" style="display:none">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+<span>Продовжити читання</span>
+<span class="continue-reading__chapter" id="continueReadingName"></span>
+</button>
+<div class="sidebar__tabs">
+<button type="button" class="sidebar__tab active" data-target="chapterGroup" onclick="switchSidebarTab('chapterGroup')">Розділи</button>
+<button type="button" class="sidebar__tab" data-target="appendixGroup" onclick="switchSidebarTab('appendixGroup')">Додатки</button>
+</div>
+<nav class="sidebar__nav">
+<div class="sidebar__group" id="chapterGroup">
+<div class="sidebar__group-links">
+<a href="#preface" class="sidebar__link" data-ch="preface"><span class="sidebar__link-num">★</span>Передмова<span class="sidebar__link-check"></span></a>
+<a href="#ch1" class="sidebar__link" data-ch="ch1"><span class="sidebar__link-num">1</span>Що таке Amazon і як це працює<span class="sidebar__link-check"></span></a>
+<a href="#ch2" class="sidebar__link" data-ch="ch2"><span class="sidebar__link-num">2</span>Реєстрація акаунта<span class="sidebar__link-check"></span></a>
+<a href="#ch3" class="sidebar__link" data-ch="ch3"><span class="sidebar__link-num">3</span>Вибір прибуткового товару<span class="sidebar__link-check"></span></a>
+<a href="#ch4" class="sidebar__link" data-ch="ch4"><span class="sidebar__link-num">4</span>Робота з постачальниками<span class="sidebar__link-check"></span></a>
+<a href="#ch5" class="sidebar__link" data-ch="ch5"><span class="sidebar__link-num">5</span>Логістика: від постачальника до Amazon<span class="sidebar__link-check"></span></a>
+<a href="#ch6" class="sidebar__link" data-ch="ch6"><span class="sidebar__link-num">6</span>Створення лістингу<span class="sidebar__link-check"></span></a>
+<a href="#ch7" class="sidebar__link" data-ch="ch7"><span class="sidebar__link-num">7</span>Брендинг та Brand Registry<span class="sidebar__link-check"></span></a>
+<a href="#ch8" class="sidebar__link" data-ch="ch8"><span class="sidebar__link-num">8</span>Buy Box<span class="sidebar__link-check"></span></a>
+<a href="#ch9" class="sidebar__link" data-ch="ch9"><span class="sidebar__link-num">9</span>Підтримка, ризики та захист акаунта<span class="sidebar__link-check"></span></a>
+<a href="#ch10" class="sidebar__link" data-ch="ch10"><span class="sidebar__link-num">10</span>Розрахунок прибутку та фінанси<span class="sidebar__link-check"></span></a>
+<a href="#ch11" class="sidebar__link" data-ch="ch11"><span class="sidebar__link-num">11</span>Юридичні аспекти та податки<span class="sidebar__link-check"></span></a>
+<a href="#ch12" class="sidebar__link" data-ch="ch12"><span class="sidebar__link-num">12</span>Підсумки та чек-лист перед запуском<span class="sidebar__link-check"></span></a>
+<a href="#ch13" class="sidebar__link" data-ch="ch13"><span class="sidebar__link-num">13</span>Amazon PPC: реклама, яка продає<span class="sidebar__link-check"></span></a>
+<a href="#ch14" class="sidebar__link" data-ch="ch14"><span class="sidebar__link-num">14</span>Специфіка для українців<span class="sidebar__link-check"></span></a>
+<a href="#ch15" class="sidebar__link" data-ch="ch15"><span class="sidebar__link-num">15</span>Відгуки та репутація<span class="sidebar__link-check"></span></a>
+<a href="#ch16" class="sidebar__link" data-ch="ch16"><span class="sidebar__link-num">16</span>Масштабування: від товару до бренду<span class="sidebar__link-check"></span></a>
+<a href="#ch17" class="sidebar__link sidebar__link--bonus" data-ch="ch17"><span class="sidebar__link-num">17</span>Helium 10: інструменти для Amazon<span class="sidebar__link-check"></span></a>
+<a href="#ch18" class="sidebar__link sidebar__link--bonus" data-ch="ch18"><span class="sidebar__link-num">18</span>Готовий товар: вихід на Amazon<span class="sidebar__link-check"></span></a>
+<a href="#final_exam" class="sidebar__link sidebar__link--exam" data-ch="final_exam"><span class="sidebar__link-num">🎓</span>Фінальний іспит<span class="sidebar__link-check"></span></a>
+</div>
+</div>
+<div class="sidebar__group sidebar__group--collapsed" id="appendixGroup">
+<div class="sidebar__group-links">
+<a href="#appendix_intro" class="sidebar__link" data-ch="appendix_intro"><span class="sidebar__link-num">★</span>Вступ до додатків<span class="sidebar__link-check"></span></a>
+<a href="#appendix_a" class="sidebar__link" data-ch="appendix_a"><span class="sidebar__link-num">A</span>Кейс: вибір товару з нуля<span class="sidebar__link-check"></span></a>
+<a href="#appendix_b" class="sidebar__link" data-ch="appendix_b"><span class="sidebar__link-num">B</span>Постачальник: якщо щось пішло не так<span class="sidebar__link-check"></span></a>
+<a href="#appendix_c" class="sidebar__link" data-ch="appendix_c"><span class="sidebar__link-num">C</span>Перший місяць: щотижневий план<span class="sidebar__link-check"></span></a>
+<a href="#appendix_d" class="sidebar__link" data-ch="appendix_d"><span class="sidebar__link-num">D</span>FAQ: 28 питань<span class="sidebar__link-check"></span></a>
+<a href="#appendix_e" class="sidebar__link" data-ch="appendix_e"><span class="sidebar__link-num">E</span>Логіка Amazon<span class="sidebar__link-check"></span></a>
+<a href="#appendix_f" class="sidebar__link" data-ch="appendix_f"><span class="sidebar__link-num">F</span>Психологія покупця<span class="sidebar__link-check"></span></a>
+<a href="#appendix_g" class="sidebar__link" data-ch="appendix_g"><span class="sidebar__link-num">G</span>A+ Content: лістинг<span class="sidebar__link-check"></span></a>
+<a href="#appendix_h" class="sidebar__link" data-ch="appendix_h"><span class="sidebar__link-num">H</span>Стратегія Q4<span class="sidebar__link-check"></span></a>
+<a href="#appendix_i" class="sidebar__link" data-ch="appendix_i"><span class="sidebar__link-num">I</span>Хороший vs поганий лістинг<span class="sidebar__link-check"></span></a>
+<a href="#appendix_j" class="sidebar__link" data-ch="appendix_j"><span class="sidebar__link-num">J</span>Повернення та A-to-Z<span class="sidebar__link-check"></span></a>
+<a href="#appendix_k" class="sidebar__link" data-ch="appendix_k"><span class="sidebar__link-num">K</span>Чек-лист: ідея до продажу<span class="sidebar__link-check"></span></a>
+<a href="#appendix_l" class="sidebar__link" data-ch="appendix_l"><span class="sidebar__link-num">L</span>Словник помилок Seller Central<span class="sidebar__link-check"></span></a>
+<a href="#appendix_m" class="sidebar__link" data-ch="appendix_m"><span class="sidebar__link-num">M</span>Схеми та візуали<span class="sidebar__link-check"></span></a>
+<a href="#appendix_n" class="sidebar__link" data-ch="appendix_n"><span class="sidebar__link-num">N</span>Корисні ресурси та інструменти<span class="sidebar__link-check"></span></a>
+<a href="#appendix_o" class="sidebar__link" data-ch="appendix_o"><span class="sidebar__link-num">O</span>Повний кейс: $3,479 за 6 міс<span class="sidebar__link-check"></span></a>
+<a href="#appendix_p" class="sidebar__link" data-ch="appendix_p"><span class="sidebar__link-num">P</span>Глосарій термінів Amazon<span class="sidebar__link-check"></span></a>
+<a href="#appendix_q" class="sidebar__link" data-ch="appendix_q"><span class="sidebar__link-num">Q</span>Відеоверифікація<span class="sidebar__link-check"></span></a>
+<a href="#appendix_r" class="sidebar__link" data-ch="appendix_r"><span class="sidebar__link-num">R</span>AI інструменти<span class="sidebar__link-check"></span></a>
+<a href="#appendix_s" class="sidebar__link" data-ch="appendix_s"><span class="sidebar__link-num">S</span>Сезонний календар<span class="sidebar__link-check"></span></a>
+<a href="#appendix_t" class="sidebar__link" data-ch="appendix_t"><span class="sidebar__link-num">T</span>Зовнішній трафік → Amazon<span class="sidebar__link-check"></span></a>
+<a href="#appendix_u" class="sidebar__link" data-ch="appendix_u"><span class="sidebar__link-num">U</span>Brand Analytics / SQP<span class="sidebar__link-check"></span></a>
+</div>
+</div>
+</nav>
+<div class="sidebar__tools">
+<button class="sidebar__tool" onclick="openFlashPanel()" data-tip="Flash-картки для повторення">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+<span>Повторення</span>
+</button>
+<button class="sidebar__tool" onclick="printCurrentChapter()" data-tip="Роздрукувати поточний розділ">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+<span>Роздрукувати</span>
+</button>
+</div>
+</aside>
+<script src="cabinet-early.js"></script>
+
+<button class="sidebar-open-btn" onclick="toggleSidebar()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18"/><path d="M14 9l-3 3 3 3"/></svg>
+</button>
+<div id="global-tooltip"></div>
+
+<div class="tour" id="tourOverlay">
+<div class="tour__backdrop" id="tourBackdrop"></div>
+<div class="tour__pop" id="tourPop">
+<div class="tour__pop-step" id="tourStep"></div>
+<h3 class="tour__pop-title" id="tourTitle"></h3>
+<p class="tour__pop-text" id="tourText"></p>
+<div class="tour__pop-controls">
+<button class="tour__pop-skip" id="tourSkip" onclick="skipTour()">Пропустити</button>
+<button class="tour__pop-next" id="tourNext" onclick="nextTour()">Далі →</button>
+</div>
+</div>
+<div class="tour__dot" id="tourDot"></div>
+</div>
+
+<main class="cabinet__main">
+<div id="cabinetContent"></div>
+</main>
+<script src="cabinet-loader.js"></script>
+</body>
+</html>

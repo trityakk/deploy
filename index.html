@@ -4,7 +4,7 @@
 <link rel="icon" type="image/svg+xml" href="photo/logo.svg">
 <link rel="apple-touch-icon" href="photo/logo.svg">
 <meta name="theme-color" content="#0A0A0A">
-<link rel="canonical" href="https://deft-phoenix-c73af2.netlify.app/">
+<link rel="canonical" href="https://trityakk.github.io/deploy/">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <script>if(history.scrollRestoration)history.scrollRestoration='manual';</script>
@@ -18,14 +18,14 @@
 <meta property="og:description" content="Практичний курс Amazon FBA для українців. Від реєстрації до першого продажу за 8–12 тижнів.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="uk_UA">
-<meta property="og:url" content="https://deft-phoenix-c73af2.netlify.app/">
-<meta property="og:image" content="https://deft-phoenix-c73af2.netlify.app/photo/bg.jpg">
+<meta property="og:url" content="https://trityakk.github.io/deploy/">
+<meta property="og:image" content="https://trityakk.github.io/deploy/photo/bg.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Старт на Amazon — курс Amazon FBA для українців · 2026">
 <meta name="twitter:description" content="Практичний курс Amazon FBA для українців. 18 розділів + 19 додатків практики.">
-<meta name="twitter:image" content="https://deft-phoenix-c73af2.netlify.app/photo/bg.jpg">
+<meta name="twitter:image" content="https://trityakk.github.io/deploy/photo/bg.jpg">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -35,7 +35,7 @@
   "provider": {
     "@type": "Organization",
     "name": "Старт на Amazon",
-    "sameAs": "https://deft-phoenix-c73af2.netlify.app/"
+    "sameAs": "https://trityakk.github.io/deploy/"
   },
   "inLanguage": "uk",
   "hasCourseInstance": {
@@ -48,7 +48,7 @@
     "price": "1299",
     "priceCurrency": "UAH",
     "availability": "https://schema.org/InStock",
-    "url": "https://deft-phoenix-c73af2.netlify.app/"
+    "url": "https://trityakk.github.io/deploy/"
   }
 }
 </script>
@@ -57,8 +57,8 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Старт на Amazon",
-  "url": "https://deft-phoenix-c73af2.netlify.app/",
-  "logo": "https://deft-phoenix-c73af2.netlify.app/photo/logo.svg",
+  "url": "https://trityakk.github.io/deploy/",
+  "logo": "https://trityakk.github.io/deploy/photo/logo.svg",
   "sameAs": [
     "https://t.me/startamazon",
     "https://instagram.com/startamazon.com.ua"
@@ -253,7 +253,7 @@
     <div class="cab-frame reveal">
       <div class="cab-topbar">
         <span class="cab-dot cab-dot--red"></span><span class="cab-dot cab-dot--yellow"></span><span class="cab-dot cab-dot--green"></span>
-        <span class="cab-topbar__url">deft-phoenix-c73af2.netlify.app</span>
+        <span class="cab-topbar__url">trityakk.github.io/deploy</span>
       </div>
       <div class="cab-mobile-bar">
         <div class="cab-mobile-bar__row">
@@ -936,6 +936,8 @@ function resetCalc() {
 }
 function updateCalc() {
   var m = parseInt(document.getElementById('ms').value);
+  var slider = document.getElementById('ms');
+  slider.style.setProperty('--range-progress', (((m - slider.min) / (slider.max - slider.min)) * 100) + '%');
   document.getElementById('mv').textContent = m;
   var mt = m === 1 ? '1 місяць' : m < 5 ? m + ' місяці' : m + ' місяців';
   document.getElementById('cmt').textContent = mt;
@@ -1550,16 +1552,17 @@ function animateCounter(el, target, duration){
 <script>
 // Легкий pointer-follow ефект для карток відгуків без важкого 3D-паралаксу.
 (function(){
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth <= 768) return;
   document.querySelectorAll('.review-grid .rc').forEach(function(card){
-    card.addEventListener('pointermove', function(event){
+    function moveCard(event){
       var rect = card.getBoundingClientRect();
       var x = (event.clientX - rect.left) / rect.width - .5;
       var y = (event.clientY - rect.top) / rect.height - .5;
       card.style.transition = 'transform .08s ease-out, box-shadow .18s ease';
       card.style.transform = 'perspective(900px) rotateX(' + (-y * 2.2).toFixed(2) + 'deg) rotateY(' + (x * 2.2).toFixed(2) + 'deg) translateY(-3px)';
-    });
+    }
+    card.addEventListener('pointermove', moveCard);
+    card.addEventListener('mousemove', moveCard);
     card.addEventListener('pointerleave', function(){
       card.style.transition = '';
       card.style.transform = '';

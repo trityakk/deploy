@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="robots" content="noindex, nofollow">
+<title>Старт на Amazon — Вітання</title>
+<link rel="stylesheet" href="styles-glass.css?v=66">
+<link rel="icon" type="image/svg+xml" href="photo/logo.svg">
+<script>
+  // Не перебрасываем в кабинет, если пользователь пришёл по ссылке активации
+  // после оплаты и должен сначала создать пароль.
+  var isActivationLink = new URLSearchParams(window.location.search).get('mode') === 'activate';
+  if (!isActivationLink && localStorage.getItem('sa_onboarding_seen') === '1') {
+    window.location.replace('cabinet.html');
+  }
+</script>
+</head>
+<body class="onboard-page" style="--onboard-bg:url('photo/onboard-1.jpg')">
+
+<div id="activate" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px">
+  <div class="onboard__card" style="width:min(100%,460px)">
+    <p class="onboard__eyebrow">Доступ до курсу</p>
+    <h1 class="onboard__title">Створи пароль</h1>
+    <p class="onboard__desc">Введи пароль для входу в особистий кабінет.</p>
+    <form id="activateForm" style="display:grid;gap:12px;margin-top:24px">
+      <div style="position:relative">
+        <input id="activatePassword" type="password" minlength="8" required autocomplete="new-password" placeholder="Не менше 8 символів" style="width:100%;padding:14px 52px 14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:inherit;font:inherit">
+        <button type="button" class="password-toggle" data-target="activatePassword" aria-label="Показати пароль" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:inherit;font-size:20px;cursor:pointer;padding:6px">👁️</button>
+      </div>
+      <div style="position:relative">
+        <input id="activatePasswordAgain" type="password" minlength="8" required autocomplete="new-password" placeholder="Повтори пароль" style="width:100%;padding:14px 52px 14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:inherit;font:inherit">
+        <button type="button" class="password-toggle" data-target="activatePasswordAgain" aria-label="Показати пароль" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:inherit;font-size:20px;cursor:pointer;padding:6px">👁️</button>
+      </div>
+      <button class="onboard__btn" type="submit">Зберегти пароль</button>
+      <p id="activateError" style="display:none;color:#ff8b8b;font-size:13px"></p>
+    </form>
+  </div>
+</div>
+
+<div class="onboard" id="onboard">
+
+  <div class="onboard__bg-track" aria-hidden="true">
+    <!-- Заміни шляхи на свої фото в photo/ -->
+    <div class="onboard__bg onboard__bg--active" style="--onboard-photo:url('photo/onboard-1.jpg')"></div>
+    <div class="onboard__bg" style="--onboard-photo:url('photo/onboard-2.jpg')"></div>
+    <div class="onboard__bg" style="--onboard-photo:url('photo/onboard-3.jpg')"></div>
+  </div>
+
+  <a href="index.html" class="onboard__logo" aria-label="На головну">
+    <img src="photo/logo.svg" alt="">
+  </a>
+
+  <div class="onboard__card">
+    <div class="onboard__steps">
+      <div class="onboard__step onboard__step--active" data-step="0">
+        <p class="onboard__eyebrow">Вітаємо</p>
+        <h1 class="onboard__title">Раді вітати тебе в особистому кабінеті</h1>
+        <p class="onboard__desc">Тут усе, що потрібно для старту на Amazon — від першого кроку до масштабування.</p>
+      </div>
+      <div class="onboard__step" data-step="1">
+        <p class="onboard__eyebrow">Всередині</p>
+        <h1 class="onboard__title">Матеріали, з якими зручно працювати</h1>
+        <p class="onboard__desc">Розділи, шаблони й чек-листи — проходь послідовно або обирай те, що потрібно зараз.</p>
+      </div>
+      <div class="onboard__step" data-step="2">
+        <p class="onboard__eyebrow">Час діяти</p>
+        <h1 class="onboard__title">Перший крок — за тобою</h1>
+        <p class="onboard__desc">Відкривай Передмову і рухайся у своєму темпі. Ми вже все підготували.</p>
+      </div>
+    </div>
+
+    <button type="button" class="onboard__btn" id="onboardBtn">Почнемо</button>
+
+    <div class="onboard__dots" role="tablist" aria-label="Кроки онбордингу">
+      <span class="onboard__dot onboard__dot--active" data-dot="0" role="tab" aria-selected="true"></span>
+      <span class="onboard__dot" data-dot="1" role="tab" aria-selected="false"></span>
+      <span class="onboard__dot" data-dot="2" role="tab" aria-selected="false"></span>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
+<script src="supabase-config.js?v=1"></script>
+<script src="enter.js?v=3"></script>
+</body>
+</html>

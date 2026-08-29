@@ -57,7 +57,9 @@
 .pricing3-payment-note{color:rgba(255,255,255,.48)}
 .pricing3-payment-note strong{color:rgba(240,180,41,.78)}
 .pricing3-payment-note{font-size:10px}
-.pricing3-sub{font-size:10px;color:rgba(154,150,164,.62)}
+.pricing3-payment-note{margin-top:8px;color:rgba(255,255,255,.38)}
+.pricing3-payment-note strong{color:rgba(240,180,41,.64)}
+.pricing3-sub{font-size:10px;margin-top:14px;color:rgba(154,150,164,.48)}
 .pricing3-cta{font-family:'Unbounded',sans-serif;font-weight:700}
 .hero-actions .btn-outline-hero:hover{color:rgba(255,255,255,.8)}
 .s-head,.pb-title{font-family:'Unbounded',sans-serif}
@@ -66,6 +68,33 @@
 .tools-grid .tool-name{margin-bottom:12px}
 .tools-grid .tool-desc{line-height:1.8}
 .fc-result-num{font-family:'Unbounded',sans-serif}
+#ms{
+  height:30px!important;
+  margin:2px 0 4px;
+  border-radius:999px;
+  background:transparent!important;
+  cursor:pointer;
+}
+#ms::-webkit-slider-runnable-track{
+  height:6px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--g) 0 var(--range-progress,60%),rgba(255,255,255,.12) var(--range-progress,60%) 100%);
+}
+#ms::-webkit-slider-thumb{
+  width:22px!important;
+  height:22px!important;
+  margin-top:-8px;
+  border:3px solid var(--g)!important;
+  border-radius:50%!important;
+  background:#17171f!important;
+  box-shadow:0 0 0 4px rgba(240,180,41,.12),0 4px 14px rgba(0,0,0,.3);
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+#ms::-moz-range-track{height:6px;border-radius:999px;background:rgba(255,255,255,.12)}
+#ms::-moz-range-progress{height:6px;border-radius:999px;background:var(--g)}
+#ms::-moz-range-thumb{width:16px;height:16px;border:3px solid var(--g);border-radius:50%;background:#17171f;box-shadow:0 0 0 4px rgba(240,180,41,.12),0 4px 14px rgba(0,0,0,.3)}
+#ms:hover::-webkit-slider-thumb,#ms:focus-visible::-webkit-slider-thumb{transform:scale(1.12);box-shadow:0 0 0 6px rgba(240,180,41,.16),0 4px 16px rgba(0,0,0,.35)}
+#ms:focus-visible{outline:2px solid rgba(240,180,41,.7);outline-offset:5px}
 #reviews{background:#fff!important}
 #faq-section{background:#fff!important}
 .pricing3-price-line{font-family:'Unbounded',sans-serif!important;font-weight:700;transition:transform .22s var(--ease-premium),color .22s ease}
@@ -74,6 +103,11 @@
 .fail-card-hd{min-height:26px}
 .fail-card-title{min-height:39px}
 .fail-card-text{flex:1}
+.fail-grid{gap:18px}
+.fail-card{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px 20px;box-shadow:0 10px 30px rgba(0,0,0,.14);transition:transform .28s var(--ease-premium),border-color .28s ease,box-shadow .28s ease}
+.fail-card:hover{transform:translateY(-5px);border-color:rgba(240,180,41,.32);box-shadow:0 16px 36px rgba(0,0,0,.24),0 0 24px rgba(240,180,41,.08)}
+.fail-card-emoji{filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
+@media(max-width:768px){.fail-grid{gap:12px}.fail-card{padding:18px 16px;border-radius:14px}}
 @media (max-width:768px) and (prefers-reduced-motion:no-preference){
   .pricing3-card{animation:pricing-card-wave 7.5s ease-in-out infinite}
   .pricing3-card:nth-child(2){animation-delay:2.5s}
