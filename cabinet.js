@@ -739,6 +739,32 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     });
   });
 
+  // Desktop-only pointer tilt: a restrained 3D response makes the overview
+  // feel tactile without adding work or accidental movement on touch devices.
+  if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.chapter-card').forEach(function (card) {
+      var frame = 0;
+      card.addEventListener('pointerenter', function () {
+        card.classList.add('chapter-card--tilting');
+        card.style.transition = '';
+      });
+      card.addEventListener('pointermove', function (event) {
+        var rect = card.getBoundingClientRect();
+        var x = (event.clientX - rect.left) / rect.width - 0.5;
+        var y = (event.clientY - rect.top) / rect.height - 0.5;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(function () {
+          card.style.transform = 'perspective(900px) translateY(-5px) rotateX(' + (-y * 6).toFixed(2) + 'deg) rotateY(' + (x * 7).toFixed(2) + 'deg) scale(1.018)';
+        });
+      });
+      card.addEventListener('pointerleave', function () {
+        cancelAnimationFrame(frame);
+        card.classList.remove('chapter-card--tilting');
+        card.style.transform = '';
+      });
+    });
+  }
+
   window.switchSidebarTab = function (id) {
     document.querySelectorAll('.sidebar__group').forEach(function (g) {
       g.classList.toggle('sidebar__group--collapsed', g.id !== id);

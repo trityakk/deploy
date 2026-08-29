@@ -524,6 +524,7 @@ button:active,.chapter-nav__btn:active,.mark-read:active{
   border-radius:16px;
   cursor:pointer;
   overflow:hidden;
+  transform-style:preserve-3d;
   animation:cardEnter .42s var(--ease) backwards;
   transition:transform .35s var(--ease),border-color .35s var(--ease),background .35s var(--ease),box-shadow .35s var(--ease),opacity .35s var(--ease);
   text-decoration:none;
@@ -607,6 +608,11 @@ button:active,.chapter-nav__btn:active,.mark-read:active{
     0 12px 32px rgba(0,0,0,0.22),
     0 0 0 1px var(--card-accent-soft);
 }
+.chapter-card.chapter-card--tilting{
+  transition:transform .18s cubic-bezier(.22,.8,.24,1),border-color .35s var(--ease),background .35s var(--ease),box-shadow .35s var(--ease),opacity .35s var(--ease);
+}
+.chapter-card.chapter-card--tilting .chapter-card__photo{transform:translateZ(8px) scale(1.015)}
+.chapter-card.chapter-card--tilting .chapter-card__body{transform:translateZ(5px)}
 .chapter-card:active{transform:translateY(-2px) scale(0.99)}
 .chapter-card--exam{
   background:linear-gradient(180deg, rgba(201,169,78,0.10), rgba(201,169,78,0.03));
