@@ -43,8 +43,8 @@
 }
 
 /* Підписи статистики трохи більші після переходу на e-Ukraine */
-.hero-stats .hs-label{font-size:10px;line-height:1.2}
-@media(max-width:768px){.hero-stats .hs-label{font-size:8.5px}}
+.hero-stats .hs-label{font-size:9px;line-height:1.2}
+@media(max-width:768px){.hero-stats .hs-label{font-size:8px}}
 
 /* Тільки візуально опускаємо плашку статистики, без зсуву інших елементів */
 .hero-stats{position:relative;top:6px}
