@@ -48,5 +48,18 @@
 
 .hero-actions .btn-outline-hero{font-size:10px;font-weight:400;color:rgba(255,255,255,.28)}
 
+/* М'який автоматичний блик на головній CTA-кнопці */
+.btn-buy-hero::after{
+  left:-68%;
+  width:48%;
+  opacity:.85;
+  animation:cta-shine 4.6s ease-in-out infinite;
+}
+@keyframes cta-shine{
+  0%,42%{transform:skewX(-20deg) translateX(0)}
+  64%,100%{transform:skewX(-20deg) translateX(330%)}
+}
+@media(prefers-reduced-motion:reduce){.btn-buy-hero::after{animation:none}}
+
 /* Тільки візуально опускаємо плашку статистики, без зсуву інших елементів */
 .hero-stats{position:relative;top:6px}
