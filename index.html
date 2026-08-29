@@ -1699,7 +1699,7 @@ function animateCounter(el, target, duration){
       pop += (popTarget - pop) * .11;
       card.style.transform = 'perspective(820px) rotateX(' + (-currentY * 12 * pop).toFixed(2) + 'deg) rotateY(' + (currentX * 12 * pop).toFixed(2) + 'deg) translate3d(' + (currentX * 7 * pop).toFixed(1) + 'px,' + ((currentY * 5 - 3) * pop).toFixed(1) + 'px,0) scale(' + (1 + .03 * pop).toFixed(4) + ')';
       if (active || Math.abs(targetX - currentX) > .01 || Math.abs(targetY - currentY) > .01 || Math.abs(popTarget - pop) > .01) raf = requestAnimationFrame(render);
-      else raf = 0;
+      else { raf = 0; card.style.transition = ''; }
     }
     card.addEventListener('pointermove', function(event){
       var rect = card.getBoundingClientRect();
@@ -1708,7 +1708,7 @@ function animateCounter(el, target, duration){
       if (!raf) raf = requestAnimationFrame(render);
     });
     card.addEventListener('pointerenter', function(){
-      active = true; popTarget = 1; card.style.willChange = 'transform'; card.style.zIndex = '3';
+      active = true; popTarget = 1; card.style.willChange = 'transform'; card.style.transition = 'none'; card.style.zIndex = '3';
       if (!raf) raf = requestAnimationFrame(render);
     });
     card.addEventListener('pointerleave', function(){
