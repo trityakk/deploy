@@ -266,3 +266,5 @@
 
 /* Тільки візуально опускаємо плашку статистики, без зсуву інших елементів */
 .hero-stats{position:relative;top:6px}
+/* Mockup: keep the progress caption quiet so the numbers lead the card. */
+#cabinet-preview .cab-progress__label span:first-child{font-size:8px;letter-spacing:1px;opacity:.76}
