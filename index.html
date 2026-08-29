@@ -1583,12 +1583,13 @@ function animateCounter(el, target, duration){
 (function(){
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth <= 768) return;
   document.querySelectorAll('.pricing3-card').forEach(function(card){
-    var targetX = 0, targetY = 0, currentX = 0, currentY = 0, raf = 0, active = false;
+    var targetX = 0, targetY = 0, currentX = 0, currentY = 0, raf = 0, active = false, pop = 0, popTarget = 0;
     function render(){
       currentX += (targetX - currentX) * .16;
       currentY += (targetY - currentY) * .16;
-      card.style.transform = 'perspective(820px) rotateX(' + (-currentY * 8).toFixed(2) + 'deg) rotateY(' + (currentX * 8).toFixed(2) + 'deg) translate3d(' + (currentX * 6).toFixed(1) + 'px,' + (currentY * 5 - 3).toFixed(1) + 'px,0) scale(1.02)';
-      if (active || Math.abs(targetX - currentX) > .01 || Math.abs(targetY - currentY) > .01) raf = requestAnimationFrame(render);
+      pop += (popTarget - pop) * .11;
+      card.style.transform = 'perspective(820px) rotateX(' + (-currentY * 8 * pop).toFixed(2) + 'deg) rotateY(' + (currentX * 8 * pop).toFixed(2) + 'deg) translate3d(' + (currentX * 6 * pop).toFixed(1) + 'px,' + ((currentY * 5 - 3) * pop).toFixed(1) + 'px,0) scale(' + (1 + .02 * pop).toFixed(4) + ')';
+      if (active || Math.abs(targetX - currentX) > .01 || Math.abs(targetY - currentY) > .01 || Math.abs(popTarget - pop) > .01) raf = requestAnimationFrame(render);
       else raf = 0;
     }
     function moveCard(event){
@@ -1600,6 +1601,7 @@ function animateCounter(el, target, duration){
     card.addEventListener('pointermove', moveCard);
     card.addEventListener('pointerenter', function(){
       active = true;
+      popTarget = 1;
       card.style.transition = 'box-shadow .22s ease';
       card.style.willChange = 'transform';
       card.style.zIndex = '3';
@@ -1609,6 +1611,7 @@ function animateCounter(el, target, duration){
       active = false;
       targetX = 0;
       targetY = 0;
+      popTarget = 0;
       card.style.transition = 'transform .42s cubic-bezier(.22,1,.36,1), box-shadow .22s ease';
       if (!raf) raf = requestAnimationFrame(render);
       card.style.willChange = '';

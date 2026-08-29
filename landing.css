@@ -106,8 +106,8 @@
 .pricing3-title{letter-spacing:-.04em}
 .pricing3-glow{opacity:.45;transition:opacity .35s ease,transform .5s var(--ease-premium);pointer-events:none}
 @media (hover:hover) and (pointer:fine){
-  .pricing3-card:not(.pricing3-main):hover{transform:translateY(-6px);background:rgba(255,255,255,.055);box-shadow:0 18px 34px rgba(0,0,0,.18)}
-  .pricing3-card.pricing3-main:hover{transform:translateY(-6px) scale(1.008);background:linear-gradient(160deg,rgba(46,42,32,.78),rgba(24,24,30,.78));box-shadow:0 22px 48px rgba(0,0,0,.28)}
+  .pricing3-card:not(.pricing3-main):hover{transform:none;background:rgba(255,255,255,.055);box-shadow:0 18px 34px rgba(0,0,0,.18)}
+  .pricing3-card.pricing3-main:hover{transform:none;background:linear-gradient(160deg,rgba(46,42,32,.78),rgba(24,24,30,.78));box-shadow:0 22px 48px rgba(0,0,0,.28)}
   .pricing3-card:hover .pricing3-glow{opacity:.65;transform:scale(1.08)}
   .pricing3-card:hover .pricing3-title{color:#fff;transform:translateY(-2px)}
   .pricing3-title{transition:color .25s ease,transform .25s var(--ease-premium)}
