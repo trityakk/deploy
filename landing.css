@@ -216,6 +216,7 @@
 #cabinet-preview .cab-overview__tabs{gap:6px}
 #cabinet-preview .cab-overview__tab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);border-radius:7px;color:rgba(255,255,255,.62);font-size:9px;padding:7px 9px}
 #cabinet-preview .cab-overview__tab--active{background:rgba(240,180,41,.14);border-color:rgba(240,180,41,.3);color:#f7c95a}
+#cabinet-preview .cab-overview__tab--active .cab-overview__badge{color:#20170a;background:#f0b429;border-color:transparent}
 #cabinet-preview .cab-card{background:#2f2f2f;border:1px solid rgba(255,255,255,.06);border-radius:10px;box-shadow:0 5px 14px rgba(0,0,0,.2);overflow:hidden;transition:transform .25s var(--ease-premium),background .25s ease,box-shadow .25s ease}
 #cabinet-preview .cab-card:hover{background:#363636;transform:translateY(-3px);box-shadow:0 12px 24px rgba(0,0,0,.28)}
 #cabinet-preview .cab-card__body{padding:14px}
