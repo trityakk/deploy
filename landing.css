@@ -96,6 +96,7 @@
 #ms:hover::-webkit-slider-thumb,#ms:focus-visible::-webkit-slider-thumb{transform:scale(1.12);box-shadow:0 0 0 6px rgba(240,180,41,.16),0 4px 16px rgba(0,0,0,.35)}
 #ms:focus-visible{outline:2px solid rgba(240,180,41,.7);outline-offset:5px}
 #reviews{background:#fff!important}
+#reviews .review-grid .rc{transform-style:preserve-3d;will-change:auto}
 #faq-section{background:#fff!important}
 .pricing3-price-line{font-family:'Unbounded',sans-serif!important;font-weight:700;transition:transform .22s var(--ease-premium),color .22s ease}
 @media (hover:hover) and (pointer:fine){.pricing3-card:hover .pricing3-price-line{transform:translateX(3px);color:var(--text)}}
