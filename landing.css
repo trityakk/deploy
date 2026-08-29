@@ -222,8 +222,8 @@
 #cabinet-preview .cab-overview__sub{font-size:10px;color:rgba(255,255,255,.42)}
 #cabinet-preview .cab-overview__tabs{gap:6px}
 #cabinet-preview .cab-overview__tab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);border-radius:7px;color:rgba(255,255,255,.62);font-size:9px;padding:7px 9px}
-#cabinet-preview .cab-overview__tab--active{background:rgba(240,180,41,.14);border-color:rgba(240,180,41,.3);color:#f7c95a}
-#cabinet-preview .cab-overview__tab--active .cab-overview__badge{color:#20170a;background:#f0b429;border-color:transparent}
+#cabinet-preview .cab-overview__tab--active{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.16);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.08) inset}
+#cabinet-preview .cab-overview__tab--active .cab-overview__badge{color:#fff;background:#d41445;border-color:transparent}
 #cabinet-preview .cab-card{background:linear-gradient(160deg,#1a202b 0%,#12171f 100%);border:1px solid rgba(255,255,255,.08);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.24);overflow:hidden;transition:transform .25s var(--ease-premium),background .25s ease,box-shadow .25s ease}
 #cabinet-preview .cab-card:hover{background:linear-gradient(160deg,#202938 0%,#161c25 100%);transform:translateY(-3px);box-shadow:0 14px 28px rgba(0,0,0,.32)}
 #cabinet-preview .cab-card__body{padding:14px}
