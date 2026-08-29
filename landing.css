@@ -122,6 +122,7 @@
   .pricing3-card:hover .pricing3-feat li:nth-child(6) .pricing3-feat-text{animation-delay:.20s}
   .pricing3-card:hover .pricing3-feat li:nth-child(7) .pricing3-feat-text{animation-delay:.24s}
   .pricing3-card:hover .pricing3-feat li:nth-child(8) .pricing3-feat-text{animation-delay:.28s}
+  .pricing3-feat li:hover .pricing3-feat-text{transform:translateX(5px);color:#fff}
   @keyframes pricing-line-nudge{0%{transform:translateX(0);color:inherit}52%{transform:translateX(7px);color:#fff}100%{transform:translateX(0);color:inherit}}
 }
 .author-fails{margin-top:54px}
