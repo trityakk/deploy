@@ -1655,6 +1655,39 @@ function animateCounter(el, target, duration){
 </script>
 
 <script>
+// Легкий 3D pointer-follow ефект для головної CTA-кнопки на десктопі.
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth <= 768) return;
+  document.querySelectorAll('.hero .btn-buy-hero').forEach(function(button){
+    var targetX = 0, targetY = 0, currentX = 0, currentY = 0, raf = 0, active = false, pop = 0, popTarget = 0;
+    function render(){
+      currentX += (targetX - currentX) * .16;
+      currentY += (targetY - currentY) * .16;
+      pop += (popTarget - pop) * .12;
+      button.style.transform = 'perspective(700px) rotateX(' + (-currentY * 5 * pop).toFixed(2) + 'deg) rotateY(' + (currentX * 5 * pop).toFixed(2) + 'deg) translate3d(' + (currentX * 4 * pop).toFixed(1) + 'px,' + ((currentY * 3 - 2) * pop).toFixed(1) + 'px,0) scale(' + (1 + .025 * pop).toFixed(4) + ')';
+      if (active || Math.abs(targetX - currentX) > .01 || Math.abs(targetY - currentY) > .01 || Math.abs(popTarget - pop) > .01) raf = requestAnimationFrame(render);
+      else raf = 0;
+    }
+    button.addEventListener('pointermove', function(event){
+      var rect = button.getBoundingClientRect();
+      targetX = (event.clientX - rect.left) / rect.width - .5;
+      targetY = (event.clientY - rect.top) / rect.height - .5;
+      if (!raf) raf = requestAnimationFrame(render);
+    });
+    button.addEventListener('pointerenter', function(){
+      active = true; popTarget = 1; button.style.willChange = 'transform';
+      if (!raf) raf = requestAnimationFrame(render);
+    });
+    button.addEventListener('pointerleave', function(){
+      active = false; targetX = 0; targetY = 0; popTarget = 0;
+      button.style.willChange = '';
+      if (!raf) raf = requestAnimationFrame(render);
+    });
+  });
+})();
+</script>
+
+<script>
 // Помітний 3D pointer-follow ефект для карток інструментів на десктопі.
 (function(){
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth <= 768) return;
