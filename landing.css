@@ -234,5 +234,19 @@
   #cabinet-preview .cab-topbar__url{font-size:8px;padding:4px 10px}
 }
 
+/* Контрастна CTA-кнопка всередині картки ціни */
+#pricing .pricing3-main .pricing3-cta{
+  background:#fff;
+  color:#17181d;
+  border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 8px 22px rgba(0,0,0,.16);
+}
+#pricing .pricing3-main .pricing3-cta .pricing3-cta-arrow{color:var(--g)}
+#pricing .pricing3-main .pricing3-cta:hover{
+  background:#f7f5f0;
+  color:#17181d;
+  box-shadow:0 13px 30px rgba(0,0,0,.22);
+}
+
 /* Тільки візуально опускаємо плашку статистики, без зсуву інших елементів */
 .hero-stats{position:relative;top:6px}
