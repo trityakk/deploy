@@ -268,6 +268,13 @@
     document.body.appendChild(statsOverlayEl);
   }
 
+  // Flash cards are another fixed full-screen panel. Keep it outside the
+  // main-content stacking context so the sidebar cannot cover the window.
+  var flashOverlayEl = document.getElementById('flashOverlay');
+  if (flashOverlayEl) {
+    document.body.appendChild(flashOverlayEl);
+  }
+
   var displayName = loadProgress('sa_display_name', '');
   var nameEl = document.getElementById('sidebarName');
   nameEl.textContent = displayName || user;
