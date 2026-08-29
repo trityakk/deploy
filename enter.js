@@ -85,7 +85,7 @@
       dot.setAttribute('aria-selected', active ? 'true' : 'false');
     });
 
-    btn.textContent = step === TOTAL - 1 ? 'Увійти в кабінет' : 'Почнемо';
+    btn.textContent = step === TOTAL - 1 ? 'Увійти в кабінет' : (step === 0 ? 'Почнемо' : 'Далі →');
   }
 
   function finish() {
