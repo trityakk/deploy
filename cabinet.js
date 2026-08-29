@@ -275,6 +275,7 @@
   function saveDisplayName(value) {
     var cleanValue = String(value || '').trim();
     if (!cleanValue) cleanValue = user;
+    displayName = cleanValue;
     saveProgress('sa_display_name', cleanValue === user ? '' : cleanValue);
     if (!window.startAmazonSupabase || user === 'guest') return;
     window.startAmazonSupabase.auth.getSession().then(function (result) {
@@ -324,6 +325,7 @@
     }).then(function (result) {
       var serverName = result && result.data && result.data.display_name;
       if (serverName) {
+        displayName = serverName;
         nameEl.textContent = serverName;
         saveProgress('sa_display_name', serverName);
       }
@@ -866,7 +868,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   var SYNC_KEYS = [
     'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
     'sa_homework', 'sa_exam_passed', 'sa_streak', 'sa_theme',
-    'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab'
+    'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab', 'sa_display_name'
   ];
 
   function backendReady() {
