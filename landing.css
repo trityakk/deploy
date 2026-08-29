@@ -51,6 +51,10 @@
 /* Описання всіх пунктів програми — трохи компактніші */
 .curr-desc-inner{font-size:11px!important}
 
+.pricing3-payment-note{color:rgba(255,255,255,.48)}
+.pricing3-payment-note strong{color:rgba(240,180,41,.78)}
+.pricing3-sub{color:rgba(154,150,164,.62)}
+
 /* М'який автоматичний блик на головній CTA-кнопці */
 .btn-buy-hero::after{
   left:-68%;
