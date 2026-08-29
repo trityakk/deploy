@@ -2343,6 +2343,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     var textEl = document.getElementById('tourText');
     if (!target || !ov || !dot || !pop) return;
 
+    pop.style.opacity = '0';
     target.scrollIntoView({ block: 'center', behavior: 'smooth' });
 
     setTimeout(function () {
@@ -2380,7 +2381,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       var nextBtn = document.getElementById('tourNext');
       if (nextBtn) nextBtn.textContent = (tourIndex === tourSteps.length - 1) ? 'Зрозуміло ✓' : 'Далі →';
       dot.style.opacity = '';
-      pop.style.opacity = '';
+      pop.style.opacity = '1';
     }, 450);
   }
 

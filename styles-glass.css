@@ -883,7 +883,9 @@ button:active,.chapter-nav__btn:active,.mark-read:active{
   z-index:9802;padding:18px 20px;border-radius:16px;
   background:#ffffff;color:#1c1d22;
   box-shadow:0 24px 60px rgba(0,0,0,0.35);
-  animation:tourPopIn .3s var(--ease);
+  animation:none;
+  opacity:0;
+  transition:opacity .2s ease;
 }
 @keyframes tourPopIn{from{opacity:0;transform:translateY(6px) scale(0.97)}to{opacity:1;transform:none}}
 .tour__pop::before{
