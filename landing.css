@@ -113,15 +113,17 @@
   .pricing3-title{transition:color .25s ease,transform .25s var(--ease-premium)}
   .pricing3-card:hover .pricing3-cta{transform:translateY(-2px);box-shadow:0 14px 34px rgba(240,180,41,.38)}
 }
-.fail-card{display:flex;flex-direction:column;height:100%}
-.fail-card-hd{min-height:26px}
-.fail-card-title{min-height:39px}
-.fail-card-text{flex:1}
-.fail-grid{gap:18px}
-.fail-card{background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:24px 20px;box-shadow:0 10px 30px rgba(0,0,0,.14);transition:transform .28s var(--ease-premium),border-color .28s ease,box-shadow .28s ease}
-.fail-card:hover{transform:translateY(-5px);border-color:rgba(240,180,41,.32);box-shadow:0 16px 36px rgba(0,0,0,.24),0 0 24px rgba(240,180,41,.08)}
-.fail-card-emoji{filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
-@media(max-width:768px){.fail-grid{gap:12px}.fail-card{padding:18px 16px;border-radius:14px}}
+.author-fails{margin-top:54px}
+.fail-label{font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:2.2px;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:18px}
+.fail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fail-card{display:flex;flex-direction:column;min-height:214px;padding:22px 20px 20px;border:1px solid rgba(255,255,255,.09);border-left:2px solid rgba(240,180,41,.72);border-radius:4px 14px 14px 4px;background:rgba(255,255,255,.025);box-shadow:0 8px 24px rgba(0,0,0,.1);transition:transform .3s var(--ease-premium),border-color .3s ease,background .3s ease,box-shadow .3s ease}
+.fail-card-emoji{display:block;font-size:25px;line-height:1;margin-bottom:22px;filter:none;opacity:.9}
+.fail-card-hd{min-height:22px;margin-bottom:8px}
+.fail-card-hd-label{font-family:'Unbounded',sans-serif;font-size:8px;line-height:1.35;letter-spacing:.7px;text-transform:uppercase;color:rgba(240,180,41,.78)}
+.fail-card-title{min-height:0;margin-bottom:10px;font-family:'e-Ukraine',sans-serif;font-size:15px;font-weight:600;line-height:1.35;color:#f1eee7}
+.fail-card-text{flex:1;font-family:'e-Ukraine',sans-serif;font-size:11px;line-height:1.65;color:rgba(255,255,255,.46)}
+@media (hover:hover) and (pointer:fine){.fail-card:hover{transform:translateY(-5px);border-color:rgba(240,180,41,.3);background:rgba(255,255,255,.045);box-shadow:0 16px 34px rgba(0,0,0,.2),0 0 24px rgba(240,180,41,.06)}}
+@media(max-width:768px){.author-fails{margin-top:40px}.fail-grid{grid-template-columns:1fr;gap:10px}.fail-card{min-height:0;padding:18px 16px;border-radius:4px 12px 12px 4px}.fail-card-emoji{font-size:22px;margin-bottom:14px}.fail-card-hd{margin-bottom:6px}.fail-card-title{font-size:14px;margin-bottom:7px}.fail-card-text{font-size:10px;line-height:1.55}}
 @media (max-width:768px) and (prefers-reduced-motion:no-preference){
   .pricing3-card{animation:pricing-card-wave 7.5s ease-in-out infinite}
   .pricing3-card:nth-child(2){animation-delay:2.5s}
