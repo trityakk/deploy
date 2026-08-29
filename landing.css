@@ -69,6 +69,16 @@
 #faq-section{background:#fff!important}
 .pricing3-price-line{font-family:'Unbounded',sans-serif!important;font-weight:700;transition:transform .22s var(--ease-premium),color .22s ease}
 @media (hover:hover) and (pointer:fine){.pricing3-card:hover .pricing3-price-line{transform:translateX(3px);color:var(--text)}}
+@media (max-width:768px) and (prefers-reduced-motion:no-preference){
+  .pricing3-card{animation:pricing-card-wave 7.5s ease-in-out infinite}
+  .pricing3-card:nth-child(2){animation-delay:2.5s}
+  .pricing3-card:nth-child(3){animation-delay:5s}
+}
+@keyframes pricing-card-wave{
+  0%,72%,100%{box-shadow:0 8px 28px rgba(0,0,0,.08)}
+  78%{box-shadow:0 10px 34px rgba(240,180,41,.18),0 0 0 1px rgba(240,180,41,.08)}
+  84%{box-shadow:0 8px 28px rgba(0,0,0,.08)}
+}
 
 /* М'який автоматичний блик на головній CTA-кнопці */
 .btn-buy-hero::after{
