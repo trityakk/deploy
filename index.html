@@ -1550,7 +1550,7 @@ function animateCounter(el, target, duration){
 </script>
 
 <script>
-// Легкий pointer-follow ефект для карток відгуків без важкого 3D-паралаксу.
+// Помітний pointer-follow ефект для карток відгуків на десктопі.
 (function(){
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth <= 768) return;
   document.querySelectorAll('.review-grid .rc').forEach(function(card){
@@ -1558,17 +1558,19 @@ function animateCounter(el, target, duration){
       var rect = card.getBoundingClientRect();
       var x = (event.clientX - rect.left) / rect.width - .5;
       var y = (event.clientY - rect.top) / rect.height - .5;
-      card.style.transition = 'transform .12s cubic-bezier(.22,1,.36,1), box-shadow .18s ease';
-      card.style.transform = 'perspective(1000px) rotateX(' + (-y * 4).toFixed(2) + 'deg) rotateY(' + (x * 4).toFixed(2) + 'deg) translate3d(' + (x * 4).toFixed(1) + 'px,-4px,0)';
+      card.style.transition = 'transform .1s cubic-bezier(.22,1,.36,1), box-shadow .18s ease';
+      card.style.transform = 'perspective(850px) rotateX(' + (-y * 12).toFixed(2) + 'deg) rotateY(' + (x * 12).toFixed(2) + 'deg) translate3d(' + (x * 8).toFixed(1) + 'px,' + (y * 6 - 3).toFixed(1) + 'px,0)';
     }
     card.addEventListener('pointermove', moveCard);
     card.addEventListener('pointerenter', function(){
       card.style.willChange = 'transform';
+      card.style.zIndex = '3';
     });
     card.addEventListener('pointerleave', function(){
       card.style.transition = '';
       card.style.transform = '';
       card.style.willChange = '';
+      card.style.zIndex = '';
     });
   });
 })();
