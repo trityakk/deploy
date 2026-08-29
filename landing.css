@@ -67,6 +67,8 @@
 .fc-result-num{font-family:'Unbounded',sans-serif}
 #reviews{background:#fff!important}
 #faq-section{background:#fff!important}
+.pricing3-price-line{font-family:'Unbounded',sans-serif!important;font-weight:700;transition:transform .22s var(--ease-premium),color .22s ease}
+@media (hover:hover) and (pointer:fine){.pricing3-card:hover .pricing3-price-line{transform:translateX(3px);color:var(--text)}}
 
 /* М'який автоматичний блик на головній CTA-кнопці */
 .btn-buy-hero::after{
