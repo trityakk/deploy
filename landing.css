@@ -60,6 +60,10 @@
 .pricing3-cta{font-family:'Unbounded',sans-serif;font-weight:700}
 .hero-actions .btn-outline-hero:hover{color:rgba(255,255,255,.8)}
 .s-head,.pb-title{font-family:'e-Ukraine Head',sans-serif}
+.tools-grid .tool-img{margin-bottom:20px}
+.tools-grid .tool-num{margin-bottom:10px}
+.tools-grid .tool-name{margin-bottom:12px}
+.tools-grid .tool-desc{line-height:1.8}
 
 /* М'який автоматичний блик на головній CTA-кнопці */
 .btn-buy-hero::after{
