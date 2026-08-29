@@ -100,18 +100,29 @@
 #faq-section{background:#fff!important}
 .pricing3-price-line{font-family:'Unbounded',sans-serif!important;font-weight:700;transition:transform .22s var(--ease-premium),color .22s ease}
 @media (hover:hover) and (pointer:fine){.pricing3-card:hover .pricing3-price-line{transform:translateX(3px);color:var(--text)}}
-.pricing3-card{font-family:'e-Ukraine',sans-serif;position:relative;isolation:isolate;transition:transform .35s var(--ease-premium),border-color .35s ease,box-shadow .35s var(--ease-premium);will-change:transform}
+.pricing3-card{font-family:'e-Ukraine',sans-serif;position:relative;isolation:isolate;transition:transform .35s var(--ease-premium),box-shadow .35s var(--ease-premium);will-change:transform}
 .pricing3-title,.pricing3-price,.pricing3-price-old,.pricing3-discount,.pricing3-price-currency,.pricing3-badge-popular,.pricing3-badge-sold{font-family:'Unbounded',sans-serif}
 .pricing3-desc,.pricing3-contact,.pricing3-price-note,.pricing3-feat,.pricing3-btn-sold,.pricing3-sub,.pricing3-payment-note{font-family:'e-Ukraine',sans-serif}
 .pricing3-title{letter-spacing:-.04em}
 .pricing3-glow{opacity:.45;transition:opacity .35s ease,transform .5s var(--ease-premium);pointer-events:none}
 @media (hover:hover) and (pointer:fine){
-  .pricing3-card:not(.pricing3-main):hover{transform:translateY(-8px);border-color:rgba(240,180,41,.22);box-shadow:0 22px 48px rgba(0,0,0,.26),0 0 28px rgba(240,180,41,.06)}
-  .pricing3-card.pricing3-main:hover{transform:translateY(-8px) scale(1.012);border-color:rgba(240,180,41,.5);box-shadow:0 26px 70px rgba(0,0,0,.38),0 0 34px rgba(240,180,41,.13)}
-  .pricing3-card:hover .pricing3-glow{opacity:1;transform:scale(1.12)}
+  .pricing3-card:not(.pricing3-main):hover{transform:translateY(-6px);box-shadow:0 18px 34px rgba(0,0,0,.18)}
+  .pricing3-card.pricing3-main:hover{transform:translateY(-6px) scale(1.008);box-shadow:0 22px 48px rgba(0,0,0,.28)}
+  .pricing3-card:hover .pricing3-glow{opacity:.65;transform:scale(1.08)}
   .pricing3-card:hover .pricing3-title{color:#fff;transform:translateY(-2px)}
   .pricing3-title{transition:color .25s ease,transform .25s var(--ease-premium)}
   .pricing3-card:hover .pricing3-cta{transform:translateY(-2px);box-shadow:0 14px 34px rgba(240,180,41,.38)}
+  .pricing3-feat li{transition:color .28s ease}
+  .pricing3-feat-text{display:inline-block;transition:transform .28s var(--ease-premium),color .28s ease}
+  .pricing3-card:hover .pricing3-feat-text{animation:pricing-line-nudge .48s var(--ease-premium) both}
+  .pricing3-card:hover .pricing3-feat li:nth-child(2) .pricing3-feat-text{animation-delay:.04s}
+  .pricing3-card:hover .pricing3-feat li:nth-child(3) .pricing3-feat-text{animation-delay:.08s}
+  .pricing3-card:hover .pricing3-feat li:nth-child(4) .pricing3-feat-text{animation-delay:.12s}
+  .pricing3-card:hover .pricing3-feat li:nth-child(5) .pricing3-feat-text{animation-delay:.16s}
+  .pricing3-card:hover .pricing3-feat li:nth-child(6) .pricing3-feat-text{animation-delay:.20s}
+  .pricing3-card:hover .pricing3-feat li:nth-child(7) .pricing3-feat-text{animation-delay:.24s}
+  .pricing3-card:hover .pricing3-feat li:nth-child(8) .pricing3-feat-text{animation-delay:.28s}
+  @keyframes pricing-line-nudge{0%{transform:translateX(0);color:inherit}52%{transform:translateX(7px);color:#fff}100%{transform:translateX(0);color:inherit}}
 }
 .author-fails{margin-top:54px}
 .fail-label{font-family:'Unbounded',sans-serif;font-size:9px;letter-spacing:2.2px;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:18px}
