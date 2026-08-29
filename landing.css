@@ -5,6 +5,9 @@
 @font-face{font-family:'e-Ukraine';src:url('font/e-Ukraine/e-Ukraine-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'e-Ukraine';src:url('font/e-Ukraine/e-Ukraine-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap}
 @font-face{font-family:'e-Ukraine';src:url('font/e-Ukraine/e-Ukraine-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'e-Ukraine Head';src:url('font/e-Ukraine Head/e-UkraineHead-Regular.otf') format('opentype');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'e-Ukraine Head';src:url('font/e-Ukraine Head/e-UkraineHead-Medium.otf') format('opentype');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'e-Ukraine Head';src:url('font/e-Ukraine Head/e-UkraineHead-Bold.otf') format('opentype');font-weight:700;font-style:normal;font-display:swap}
 
 /* Единый компактный control для раскрытия программы */
 .curr-expand-btn{
@@ -56,6 +59,7 @@
 .pricing3-sub{color:rgba(154,150,164,.62)}
 .pricing3-cta{font-family:'Unbounded',sans-serif;font-weight:700}
 .hero-actions .btn-outline-hero:hover{color:rgba(255,255,255,.8)}
+.s-head,.pb-title{font-family:'e-Ukraine Head',sans-serif}
 
 /* М'який автоматичний блик на головній CTA-кнопці */
 .btn-buy-hero::after{
