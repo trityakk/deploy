@@ -1622,6 +1622,39 @@ function animateCounter(el, target, duration){
 </script>
 
 <script>
+// Помітний 3D pointer-follow ефект для карток типових помилок на десктопі.
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth <= 768) return;
+  document.querySelectorAll('.fail-card').forEach(function(card){
+    var targetX = 0, targetY = 0, currentX = 0, currentY = 0, raf = 0, active = false, pop = 0, popTarget = 0;
+    function render(){
+      currentX += (targetX - currentX) * .16;
+      currentY += (targetY - currentY) * .16;
+      pop += (popTarget - pop) * .11;
+      card.style.transform = 'perspective(750px) rotateX(' + (-currentY * 17 * pop).toFixed(2) + 'deg) rotateY(' + (currentX * 17 * pop).toFixed(2) + 'deg) translate3d(' + (currentX * 10 * pop).toFixed(1) + 'px,' + ((currentY * 8 - 3) * pop).toFixed(1) + 'px,0) scale(' + (1 + .035 * pop).toFixed(4) + ')';
+      if (active || Math.abs(targetX - currentX) > .01 || Math.abs(targetY - currentY) > .01 || Math.abs(popTarget - pop) > .01) raf = requestAnimationFrame(render);
+      else raf = 0;
+    }
+    card.addEventListener('pointermove', function(event){
+      var rect = card.getBoundingClientRect();
+      targetX = (event.clientX - rect.left) / rect.width - .5;
+      targetY = (event.clientY - rect.top) / rect.height - .5;
+      if (!raf) raf = requestAnimationFrame(render);
+    });
+    card.addEventListener('pointerenter', function(){
+      active = true; popTarget = 1; card.style.willChange = 'transform'; card.style.zIndex = '3';
+      if (!raf) raf = requestAnimationFrame(render);
+    });
+    card.addEventListener('pointerleave', function(){
+      active = false; targetX = 0; targetY = 0; popTarget = 0;
+      card.style.willChange = ''; card.style.zIndex = '';
+      if (!raf) raf = requestAnimationFrame(render);
+    });
+  });
+})();
+</script>
+
+<script>
 // Small accessibility pass for the existing accordion: preserve its behavior,
 // while making the same controls usable with keyboard and assistive technology.
 (function(){
