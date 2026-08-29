@@ -159,5 +159,79 @@
 }
 @media(prefers-reduced-motion:reduce){.btn-buy-hero::after{animation:none}}
 
+/* Реалістичний app-shell для прев'ю особистого кабінету */
+#cabinet-preview .cab-frame{
+  background:#202123;
+  border:1px solid rgba(0,0,0,.22);
+  border-radius:14px;
+  box-shadow:0 28px 80px rgba(18,20,25,.24),0 1px 0 rgba(255,255,255,.16) inset;
+}
+#cabinet-preview .cab-topbar{
+  min-height:36px;
+  padding:7px 12px;
+  background:#202123;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+#cabinet-preview .cab-topbar__url{
+  color:rgba(255,255,255,.58);
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:7px;
+  padding:4px 16px;
+  font-family:'e-Ukraine',sans-serif;
+  font-size:9px;
+  letter-spacing:.1px;
+}
+#cabinet-preview .cab-body{background:#343541}
+#cabinet-preview .cab-sidebar{
+  background:#202123;
+  border-right:1px solid rgba(255,255,255,.06);
+  padding:16px 12px;
+}
+#cabinet-preview .cab-sidebar__logo{font-size:11px;color:rgba(255,255,255,.88)}
+#cabinet-preview .cab-sidebar__logo b{color:#fff}
+#cabinet-preview .cab-sidebar__top{margin-bottom:20px}
+#cabinet-preview .cab-user{
+  padding:8px;
+  margin:0 -2px 14px;
+  border-radius:8px;
+  background:rgba(255,255,255,.055);
+}
+#cabinet-preview .cab-user__name{font-size:11px;color:rgba(255,255,255,.78)}
+#cabinet-preview .cab-search{
+  position:relative;
+  margin-bottom:12px;
+  padding:9px 10px 9px 30px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:7px;
+  font-size:10px;
+  color:rgba(255,255,255,.42);
+}
+#cabinet-preview .cab-search::before{content:'⌕';position:absolute;left:11px;top:6px;font-size:16px;color:rgba(255,255,255,.4)}
+#cabinet-preview .cab-tabs{background:rgba(255,255,255,.04);border-radius:7px}
+#cabinet-preview .cab-tab{font-size:10px;color:rgba(255,255,255,.42)}
+#cabinet-preview .cab-tab--active{background:rgba(255,255,255,.1);color:rgba(255,255,255,.9)}
+#cabinet-preview .cab-link{font-size:10px;padding:8px 9px;border-radius:6px;color:rgba(255,255,255,.55)}
+#cabinet-preview .cab-link--active{background:#343541;color:#fff;box-shadow:inset 2px 0 var(--g)}
+#cabinet-preview .cab-sidebar__more{font-size:9px;color:rgba(255,255,255,.3);padding:12px 9px}
+#cabinet-preview .cab-main{background:#343541;padding:30px 34px}
+#cabinet-preview .cab-overview__title{font-size:21px;color:#fff;letter-spacing:-.035em}
+#cabinet-preview .cab-overview__sub{font-size:10px;color:rgba(255,255,255,.42)}
+#cabinet-preview .cab-overview__tabs{gap:6px}
+#cabinet-preview .cab-overview__tab{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);border-radius:7px;color:rgba(255,255,255,.62);font-size:9px;padding:7px 9px}
+#cabinet-preview .cab-overview__tab--active{background:rgba(240,180,41,.14);border-color:rgba(240,180,41,.3);color:#f7c95a}
+#cabinet-preview .cab-card{background:#40414f;border:1px solid rgba(255,255,255,.06);border-radius:10px;box-shadow:0 5px 14px rgba(0,0,0,.12);overflow:hidden;transition:transform .25s var(--ease-premium),background .25s ease,box-shadow .25s ease}
+#cabinet-preview .cab-card:hover{background:#454654;transform:translateY(-3px);box-shadow:0 12px 24px rgba(0,0,0,.2)}
+#cabinet-preview .cab-card__body{padding:14px}
+#cabinet-preview .cab-card__tag{font-size:8px;letter-spacing:1px;color:#f0b429}
+#cabinet-preview .cab-card__title{font-size:12px;color:#fff;line-height:1.35}
+#cabinet-preview .cab-card__desc{font-size:9px;line-height:1.5;color:rgba(255,255,255,.48)}
+#cabinet-preview .cab-card__meta{font-size:8px;color:rgba(255,255,255,.34)}
+@media(max-width:768px){
+  #cabinet-preview .cab-main{padding:22px 18px}
+  #cabinet-preview .cab-topbar__url{font-size:8px;padding:4px 10px}
+}
+
 /* Тільки візуально опускаємо плашку статистики, без зсуву інших елементів */
 .hero-stats{position:relative;top:6px}
