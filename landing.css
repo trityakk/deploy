@@ -65,6 +65,7 @@
 .tools-grid .tool-name{margin-bottom:12px}
 .tools-grid .tool-desc{line-height:1.8}
 .fc-result-num{font-family:'Unbounded',sans-serif}
+#reviews{background:#fff!important}
 
 /* М'який автоматичний блик на головній CTA-кнопці */
 .btn-buy-hero::after{
