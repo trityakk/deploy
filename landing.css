@@ -236,6 +236,10 @@
   #cabinet-preview .cab-topbar__url{font-size:8px;padding:4px 10px}
 }
 #author .fail-card:hover{border-color:transparent;background:rgba(255,255,255,.045);box-shadow:0 16px 34px rgba(0,0,0,.2)}
+.tools-grid .tool-img{width:116px;height:116px;margin-bottom:12px}
+.tools-grid .tool-num{font-size:10px}
+.tools-grid .tool-name{font-size:13px;margin-bottom:8px}
+.tools-grid .tool-desc{font-size:11px;line-height:1.6}
 
 /* Контрастна CTA-кнопка всередині картки ціни */
 #pricing .pricing3-main .pricing3-cta{
