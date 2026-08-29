@@ -43,8 +43,8 @@
 }
 
 /* Підписи статистики трохи більші після переходу на e-Ukraine */
-.hero-stats .hs-label{font-size:8px;line-height:1.2;color:rgba(255,255,255,.34)}
-@media(max-width:768px){.hero-stats .hs-label{font-size:7.5px}}
+.hero-stats .hs-label{font-size:8.5px;line-height:1.2;color:rgba(255,255,255,.34)}
+@media(max-width:768px){.hero-stats .hs-label{font-size:8px}}
 
 .hero-actions .btn-outline-hero{font-size:10px;font-weight:400;color:rgba(255,255,255,.28)}
 
