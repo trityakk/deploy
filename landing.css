@@ -48,6 +48,9 @@
 
 .hero-actions .btn-outline-hero{font-size:10px;font-weight:400;color:rgba(255,255,255,.28)}
 
+/* Описання всіх пунктів програми — трохи компактніші */
+.curr-desc-inner{font-size:11px!important}
+
 /* М'який автоматичний блик на головній CTA-кнопці */
 .btn-buy-hero::after{
   left:-68%;
