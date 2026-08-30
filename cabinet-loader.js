@@ -41,6 +41,9 @@
     console.warn('Кабінет очікує підтвердження доступу.', error);
   }
 
+  // Resolve the initial boot state before the full cabinet script starts.
+  document.body.classList.remove('cabinet-booting');
+
   // Never leave an empty course shell visible. The login modal remains usable
   // for guests, while the protected course UI appears only after its content
   // has been downloaded successfully.
