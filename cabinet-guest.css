@@ -1,0 +1,7 @@
+/* Keep the protected cabinet shell out of view until its private content is ready. */
+body.cabinet-guest > .sidebar,
+body.cabinet-guest > .sidebar-open-btn,
+body.cabinet-guest > .cabinet__main {
+  visibility: hidden;
+  pointer-events: none;
+}
