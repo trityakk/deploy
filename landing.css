@@ -274,3 +274,8 @@
   .tools-grid .tool-img{transition:transform .68s cubic-bezier(.22,1,.36,1),filter .55s ease}
   .tools-grid .tool:hover .tool-img{transform:perspective(800px) rotateX(4deg) rotateY(-5deg) translate3d(2px,-3px,8px) scale(1.11)}
 }
+/* Error cards: match the same soft 3D entry instead of a hover jump. */
+@media (hover:hover) and (pointer:fine){
+  #author .fail-card-emoji{transition:transform .68s cubic-bezier(.22,1,.36,1),filter .55s ease}
+  #author .fail-card:hover .fail-card-emoji{transform:translate3d(2px,-3px,12px) scale(1.1) rotate(-3deg);filter:drop-shadow(0 8px 10px rgba(0,0,0,.22))}
+}
