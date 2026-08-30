@@ -4053,6 +4053,15 @@ html.sidebar-locked{overflow:hidden;height:100%;overscroll-behavior:none}
 /* ── Кнопка карти курсу в сайдбарі ── */
 
 /* ── Responsive ───────────────────────────────── */
+/* ── Content editor markers ─────────────────────
+   Every prepared screenshot slot gets a stable visible number, so none is
+   lost while replacing the placeholders with real course visuals. */
+body{counter-reset:courseScreenshot}
+.screenshot-placeholder{counter-increment:courseScreenshot}
+.screenshot-placeholder__label::before{
+  content:'📸 ВСТАВИТИ СКРІНШОТ №' counter(courseScreenshot) ' · ';
+  color:var(--gold);font-weight:800;
+}
 @media(max-width:640px){
   .origin-arc.rd-timeline::before{display:none}
   .origin-arc.rd-timeline .origin-arc__item::after{display:none}
