@@ -9,7 +9,7 @@
     for (const src of [
       'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4',
       'supabase-config.js?v=2',
-      'cabinet.js?v=55'
+      'cabinet.js?v=56'
     ]) {
       await new Promise(function (resolve, reject) {
         var script = document.createElement('script');

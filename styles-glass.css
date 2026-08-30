@@ -3813,6 +3813,10 @@ html.sidebar-locked{overflow:hidden;height:100%;overscroll-behavior:none}
   background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;animation:rdShine 6s ease-in-out infinite;
 }
+.rd-stat,.rd-role,.rd-flow .supply-chain__step{transform-style:preserve-3d}
+.rd-pointer-tilting{transition:transform .18s cubic-bezier(.22,.8,.24,1),border-color .35s var(--ease),background .35s var(--ease),box-shadow .35s var(--ease)}
+.rd-pointer-tilting .rd-stat__icon,.rd-pointer-tilting .rd-role__icon{transform:translateZ(8px)}
+.rd-pointer-tilting .rd-stat__num,.rd-pointer-tilting .rd-role__badge{transform:translateZ(5px)}
 
 /* ── CH1 · role cards (замість таблиці "Три ролі") ── */
 .rd-roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:1.6rem 0}

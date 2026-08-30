@@ -268,13 +268,6 @@
     document.body.appendChild(statsOverlayEl);
   }
 
-  // Flash cards are another fixed full-screen panel. Keep it outside the
-  // main-content stacking context so the sidebar cannot cover the window.
-  var flashOverlayEl = document.getElementById('flashOverlay');
-  if (flashOverlayEl) {
-    document.body.appendChild(flashOverlayEl);
-  }
-
   var displayName = loadProgress('sa_display_name', '');
   var nameEl = document.getElementById('sidebarName');
   nameEl.textContent = displayName || user;
@@ -769,6 +762,29 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       card.addEventListener('pointerleave', function () {
         cancelAnimationFrame(frame);
         card.classList.remove('chapter-card--tilting');
+        card.style.transform = '';
+      });
+    });
+
+    // Lightweight pointer tilt for the content cards.  It reuses the same
+    // tactile motion as chapter cards, but keeps the angle and scale subtle.
+    document.querySelectorAll('.rd-stat, .rd-role, .rd-flow .supply-chain__step').forEach(function (card) {
+      var frame = 0;
+      card.addEventListener('pointerenter', function () {
+        card.classList.add('rd-pointer-tilting');
+      });
+      card.addEventListener('pointermove', function (event) {
+        var rect = card.getBoundingClientRect();
+        var x = (event.clientX - rect.left) / rect.width - 0.5;
+        var y = (event.clientY - rect.top) / rect.height - 0.5;
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(function () {
+          card.style.transform = 'perspective(800px) translateY(-4px) rotateX(' + (-y * 5).toFixed(2) + 'deg) rotateY(' + (x * 6).toFixed(2) + 'deg) scale(1.012)';
+        });
+      });
+      card.addEventListener('pointerleave', function () {
+        cancelAnimationFrame(frame);
+        card.classList.remove('rd-pointer-tilting');
         card.style.transform = '';
       });
     });
