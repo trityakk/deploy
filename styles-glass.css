@@ -3560,7 +3560,7 @@ html.sidebar-locked{overflow:hidden;height:100%;overscroll-behavior:none}
 }
 .onboard__dot--active{
   width:26px;
-  background:var(--gold);
+  background:#fff;
 }
 /* ── Password activation ──────────────────────── */
 .activate-page{
