@@ -65,7 +65,18 @@
         toggle.setAttribute('aria-pressed', showing ? 'false' : 'true');
       });
     });
-    waitForRecoverySession().then(function (session) {
+    async function completeAuthCallback() {
+      var code = new URLSearchParams(window.location.search).get('code');
+      if (!code) return;
+      var result = await window.startAmazonSupabase.auth.exchangeCodeForSession(code);
+      if (result && result.error) throw result.error;
+    }
+
+    completeAuthCallback().catch(function (err) {
+      console.warn('Не вдалося обміняти код активації на сесію.', err);
+    }).finally(function () {
+      return waitForRecoverySession();
+    }).then(function (session) {
       setActivationReady(!!session);
       if (!session && error) {
         var params = new URLSearchParams(window.location.search);
