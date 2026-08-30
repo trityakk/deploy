@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a0a0a">
 <meta name="robots" content="noindex, nofollow">
 <title>Старт на Amazon — Вітання</title>
-<link rel="stylesheet" href="styles-glass.css?v=148">
+<link rel="stylesheet" href="styles-glass.css?v=149">
 <link rel="icon" type="image/svg+xml" href="photo/favicon.svg">
 <script>
   // Не перебрасываем в кабинет, если пользователь пришёл по ссылке активации
@@ -30,8 +30,9 @@
         <span>Новий пароль</span>
         <span class="activate-input-wrap">
           <input id="activatePassword" type="password" minlength="8" required autocomplete="new-password" placeholder="Не менше 8 символів">
-          <button type="button" class="password-toggle" data-target="activatePassword" aria-label="Показати пароль">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+          <button type="button" class="password-toggle" data-target="activatePassword" aria-label="Показати пароль" aria-pressed="false">
+            <svg class="password-icon password-icon--show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            <svg class="password-icon password-icon--hide" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18"/><path d="M10.6 6.9A10.9 10.9 0 0 1 12 6.8c6 0 9.5 5.2 9.5 5.2a17.5 17.5 0 0 1-3.3 3.6M6.2 6.4C3.9 8 2.5 12 2.5 12s3.5 5.2 9.5 5.2c1 0 1.9-.2 2.7-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
           </button>
         </span>
       </label>
@@ -39,8 +40,9 @@
         <span>Повтори пароль</span>
         <span class="activate-input-wrap">
           <input id="activatePasswordAgain" type="password" minlength="8" required autocomplete="new-password" placeholder="Повтори пароль">
-          <button type="button" class="password-toggle" data-target="activatePasswordAgain" aria-label="Показати пароль">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+          <button type="button" class="password-toggle" data-target="activatePasswordAgain" aria-label="Показати пароль" aria-pressed="false">
+            <svg class="password-icon password-icon--show" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            <svg class="password-icon password-icon--hide" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18"/><path d="M10.6 6.9A10.9 10.9 0 0 1 12 6.8c6 0 9.5 5.2 9.5 5.2a17.5 17.5 0 0 1-3.3 3.6M6.2 6.4C3.9 8 2.5 12 2.5 12s3.5 5.2 9.5 5.2c1 0 1.9-.2 2.7-.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
           </button>
         </span>
       </label>

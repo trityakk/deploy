@@ -55,6 +55,7 @@
         input.type = showing ? 'password' : 'text';
         toggle.classList.toggle('is-visible', !showing);
         toggle.setAttribute('aria-label', showing ? 'Показати пароль' : 'Сховати пароль');
+        toggle.setAttribute('aria-pressed', showing ? 'false' : 'true');
       });
     });
     waitForRecoverySession().then(function (session) {
