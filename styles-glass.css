@@ -323,6 +323,9 @@ button:active,.chapter-nav__btn:active,.mark-read:active{
 .login-submit:hover{filter:none;transform:translateY(-2px);box-shadow:0 12px 30px rgba(240,180,41,.38),inset 0 1px 0 rgba(255,255,255,.5)}
 .login-submit:active{transform:translateY(0);box-shadow:0 5px 16px rgba(240,180,41,.25)}
 .login-submit:disabled{cursor:wait;opacity:.65;transform:none}
+.login-recovery{display:block;width:100%;margin-top:12px;border:0;background:none;color:rgba(255,255,255,.58);font:inherit;font-size:13px;cursor:pointer;transition:color .2s ease}
+.login-recovery:hover{color:#fff}
+.login-recovery:disabled{cursor:wait;opacity:.55}
 .login-error{
   color:var(--red);font-size:var(--fs-base);margin-top:14px;
   display:none;text-align:center;

@@ -85,6 +85,26 @@
       }
       return false;
     };
+    var recoveryButton = document.getElementById('cabinetRecoveryBtn');
+    if (recoveryButton) recoveryButton.addEventListener('click', async function () {
+      var email = document.getElementById('cabinetLoginInput').value.trim().toLowerCase();
+      var errorEl = document.getElementById('cabinetLoginError');
+      if (!email) {
+        if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Спочатку введіть email.'; }
+        return;
+      }
+      recoveryButton.disabled = true;
+      try {
+        var redirectTo = new URL('enter.html?mode=activate', window.location.href).href;
+        var recovery = await window.startAmazonSupabase.auth.resetPasswordForEmail(email, { redirectTo: redirectTo });
+        if (recovery.error) throw recovery.error;
+        if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Нове посилання надіслано на email.'; }
+      } catch (error) {
+        if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Не вдалося надіслати посилання. Спробуй ще раз.'; }
+      } finally {
+        recoveryButton.disabled = false;
+      }
+    });
     return;
   }
 
