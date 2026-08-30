@@ -17,6 +17,8 @@
     var status = document.getElementById('activateStatus');
     var recoveryReady = false;
 
+    setActivationReady(false);
+
     function setActivationReady(ready) {
       recoveryReady = ready;
       if (submit) submit.disabled = !ready;
@@ -29,7 +31,8 @@
     function waitForRecoverySession() {
       return new Promise(function (resolve) {
         var finished = false;
-        var timer = setTimeout(function () { finish(null); }, 8000);
+        var timer = setTimeout(function () { finish(null); }, 20000);
+        var poll = setInterval(checkSession, 300);
         var listener = window.startAmazonSupabase.auth.onAuthStateChange(function (event, session) {
           if (session && (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) finish(session);
         });
@@ -37,13 +40,17 @@
           if (finished) return;
           finished = true;
           clearTimeout(timer);
+          clearInterval(poll);
           if (listener && listener.data && listener.data.subscription) listener.data.subscription.unsubscribe();
           resolve(session);
         }
-        window.startAmazonSupabase.auth.getSession().then(function (result) {
+        function checkSession() {
+          window.startAmazonSupabase.auth.getSession().then(function (result) {
           var session = result && result.data && result.data.session;
           if (session) finish(session);
-        }).catch(function () { finish(null); });
+          }).catch(function () { /* URL-сесія ще може оброблятися */ });
+        }
+        checkSession();
       });
     }
 
@@ -61,7 +68,11 @@
     waitForRecoverySession().then(function (session) {
       setActivationReady(!!session);
       if (!session && error) {
-        error.textContent = 'Посилання не підтверджено. Відкрий лист ще раз або запроси нове посилання.';
+        var params = new URLSearchParams(window.location.search);
+        var reason = params.get('error_description') || params.get('error');
+        error.textContent = reason
+          ? 'Не вдалося підтвердити посилання: ' + reason.replace(/\+/g, ' ')
+          : 'Не вдалося підтвердити сесію. Відкрий лист ще раз або запроси нове посилання.';
         error.classList.add('is-visible');
       }
     });
