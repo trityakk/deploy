@@ -3583,7 +3583,12 @@ html.sidebar-locked{overflow:hidden;height:100%;overscroll-behavior:none}
 .activate-submit{display:flex;align-items:center;justify-content:space-between;width:100%;height:54px;margin-top:8px;padding:0 18px;border:1px solid rgba(255,255,255,.22);border-radius:13px;background:linear-gradient(135deg,var(--gold),#d8940a);color:#181208;font:inherit;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(240,180,41,.2);transition:transform .2s ease,filter .2s ease,opacity .2s ease}
 .activate-submit:hover{transform:translateY(-2px);filter:brightness(1.06)}.activate-submit:disabled{cursor:wait;opacity:.55;transform:none}
 .activate-status{margin:2px 0 0;color:rgba(255,255,255,.42);font-size:12px;line-height:1.45}.activate-status--ready{color:#78d6a0}.activate-error{display:none;margin:2px 0 0;color:#ff8b8b;font-size:12px;line-height:1.45}.activate-error.is-visible{display:block}
-@media(max-width:520px){.activate-page{align-items:flex-end;padding:0}.activate-card{width:100%;padding:28px 20px calc(24px + env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0}.activate-card__brand{margin-bottom:22px}.activate-card .onboard__title{font-size:28px}}
+.activate-card{background:rgba(25,25,22,.78);backdrop-filter:blur(24px) saturate(1.15);-webkit-backdrop-filter:blur(24px) saturate(1.15)}
+.activate-field input{background:rgba(247,255,199,.98);border-color:rgba(255,255,255,.3);color:#0c0c0b;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.activate-field input:focus{background:#fbffd8;color:#0c0c0b}.activate-field input::placeholder{color:rgba(12,12,11,.42)}
+.password-toggle{color:rgba(12,12,11,.62)}.password-toggle:hover,.password-toggle.is-visible{color:#0c0c0b;background:rgba(0,0,0,.08)}
+.activate-submit{border:0;background:#fff;color:#111;box-shadow:0 8px 24px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.7)}.activate-submit:hover{filter:none;background:#fff;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+@media(max-width:520px){.activate-page{align-items:flex-end;padding:0}.activate-card{width:100%;padding:42px 24px calc(28px + env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0}.activate-card__brand{margin-bottom:28px}.activate-card .onboard__title{font-size:32px}.activate-card .onboard__desc{margin-bottom:30px}.activate-form{gap:16px}.activate-field{gap:8px}.activate-field input{height:68px;padding-left:18px;font-size:16px;border-radius:14px}.activate-submit{height:68px;margin-top:10px;font-size:16px;border-radius:0}.activate-status,.activate-error{font-size:13px}}
 .onboard{
   position:relative;
   min-height:100vh;min-height:100dvh;
