@@ -11,7 +11,12 @@
 <script>
   // Не перебрасываем в кабинет, если пользователь пришёл по ссылке активации
   // после оплаты и должен сначала создать пароль.
-  var isActivationLink = new URLSearchParams(window.location.search).get('mode') === 'activate';
+  var activationQuery = new URLSearchParams(window.location.search);
+  var activationHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  var isActivationLink = activationQuery.get('mode') === 'activate'
+    || activationQuery.has('code')
+    || activationQuery.get('type') === 'recovery'
+    || activationHash.get('type') === 'recovery';
   if (!isActivationLink && localStorage.getItem('sa_onboarding_seen') === '1') {
     window.location.replace('cabinet.html');
   }
