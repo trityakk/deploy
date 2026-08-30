@@ -13,33 +13,77 @@
     var error = document.getElementById('activateError');
     if (activate) activate.style.display = 'flex';
     if (onboard) onboard.style.display = 'none';
+    var submit = form && form.querySelector('.activate-submit');
+    var status = document.getElementById('activateStatus');
+    var recoveryReady = false;
+
+    function setActivationReady(ready) {
+      recoveryReady = ready;
+      if (submit) submit.disabled = !ready;
+      if (status) {
+        status.textContent = ready ? 'Посилання підтверджено. Можна створити пароль.' : 'Посилання ще перевіряється…';
+        status.classList.toggle('activate-status--ready', ready);
+      }
+    }
+
+    function waitForRecoverySession() {
+      return new Promise(function (resolve) {
+        var finished = false;
+        var timer = setTimeout(function () { finish(null); }, 8000);
+        var listener = window.startAmazonSupabase.auth.onAuthStateChange(function (event, session) {
+          if (session && (event === 'PASSWORD_RECOVERY' || event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) finish(session);
+        });
+        function finish(session) {
+          if (finished) return;
+          finished = true;
+          clearTimeout(timer);
+          if (listener && listener.data && listener.data.subscription) listener.data.subscription.unsubscribe();
+          resolve(session);
+        }
+        window.startAmazonSupabase.auth.getSession().then(function (result) {
+          var session = result && result.data && result.data.session;
+          if (session) finish(session);
+        }).catch(function () { finish(null); });
+      });
+    }
+
     document.querySelectorAll('.password-toggle').forEach(function (toggle) {
       toggle.addEventListener('click', function () {
         var input = document.getElementById(toggle.getAttribute('data-target'));
         if (!input) return;
         var showing = input.type === 'text';
         input.type = showing ? 'password' : 'text';
-        toggle.textContent = showing ? '👁️' : '🙈';
+        toggle.classList.toggle('is-visible', !showing);
         toggle.setAttribute('aria-label', showing ? 'Показати пароль' : 'Сховати пароль');
       });
     });
+    waitForRecoverySession().then(function (session) {
+      setActivationReady(!!session);
+      if (!session && error) {
+        error.textContent = 'Посилання не підтверджено. Відкрий лист ще раз або запроси нове посилання.';
+        error.classList.add('is-visible');
+      }
+    });
     if (form) form.addEventListener('submit', async function (event) {
       event.preventDefault();
+      if (!recoveryReady) return;
       var password = document.getElementById('activatePassword').value;
       var repeat = document.getElementById('activatePasswordAgain').value;
       if (password !== repeat) {
         error.textContent = 'Паролі не збігаються.';
-        error.style.display = 'block';
+        error.classList.add('is-visible');
         return;
       }
+      if (submit) submit.disabled = true;
       try {
         var result = await window.startAmazonSupabase.auth.updateUser({ password: password });
         if (result.error) throw result.error;
         localStorage.setItem(STORAGE_KEY, '1');
         window.location.href = 'cabinet.html';
       } catch (err) {
-        error.textContent = 'Не вдалося зберегти пароль. Посилання могло застаріти.';
-        error.style.display = 'block';
+        if (submit) submit.disabled = false;
+        error.textContent = err && err.message ? 'Не вдалося зберегти пароль: ' + err.message : 'Не вдалося зберегти пароль. Посилання могло застаріти.';
+        error.classList.add('is-visible');
       }
     });
     return;

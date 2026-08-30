@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0a0a0a">
 <meta name="robots" content="noindex, nofollow">
 <title>Старт на Amazon — Вітання</title>
-<link rel="stylesheet" href="styles-glass.css?v=147">
+<link rel="stylesheet" href="styles-glass.css?v=148">
 <link rel="icon" type="image/svg+xml" href="photo/favicon.svg">
 <script>
   // Не перебрасываем в кабинет, если пользователь пришёл по ссылке активации
@@ -19,22 +19,34 @@
 </head>
 <body class="onboard-page" style="--onboard-bg:url('photo/onboard-1.jpg')">
 
-<div id="activate" style="display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px">
-  <div class="onboard__card" style="width:min(100%,460px)">
+<div id="activate" class="activate-page">
+  <div class="activate-card">
+    <a class="activate-card__brand" href="index.html" aria-label="На головну"><img src="photo/logo.svg" alt=""></a>
     <p class="onboard__eyebrow">Доступ до курсу</p>
     <h1 class="onboard__title">Створи пароль</h1>
     <p class="onboard__desc">Введи пароль для входу в особистий кабінет.</p>
-    <form id="activateForm" style="display:grid;gap:12px;margin-top:24px">
-      <div style="position:relative">
-        <input id="activatePassword" type="password" minlength="8" required autocomplete="new-password" placeholder="Не менше 8 символів" style="width:100%;padding:14px 52px 14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:inherit;font:inherit">
-        <button type="button" class="password-toggle" data-target="activatePassword" aria-label="Показати пароль" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:inherit;font-size:20px;cursor:pointer;padding:6px">👁️</button>
-      </div>
-      <div style="position:relative">
-        <input id="activatePasswordAgain" type="password" minlength="8" required autocomplete="new-password" placeholder="Повтори пароль" style="width:100%;padding:14px 52px 14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:inherit;font:inherit">
-        <button type="button" class="password-toggle" data-target="activatePasswordAgain" aria-label="Показати пароль" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:inherit;font-size:20px;cursor:pointer;padding:6px">👁️</button>
-      </div>
-      <button class="onboard__btn" type="submit">Зберегти пароль</button>
-      <p id="activateError" style="display:none;color:#ff8b8b;font-size:13px"></p>
+    <form id="activateForm" class="activate-form">
+      <label class="activate-field">
+        <span>Новий пароль</span>
+        <span class="activate-input-wrap">
+          <input id="activatePassword" type="password" minlength="8" required autocomplete="new-password" placeholder="Не менше 8 символів">
+          <button type="button" class="password-toggle" data-target="activatePassword" aria-label="Показати пароль">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+          </button>
+        </span>
+      </label>
+      <label class="activate-field">
+        <span>Повтори пароль</span>
+        <span class="activate-input-wrap">
+          <input id="activatePasswordAgain" type="password" minlength="8" required autocomplete="new-password" placeholder="Повтори пароль">
+          <button type="button" class="password-toggle" data-target="activatePasswordAgain" aria-label="Показати пароль">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+          </button>
+        </span>
+      </label>
+      <button class="activate-submit" type="submit"><span>Зберегти пароль</span><span aria-hidden="true">→</span></button>
+      <p id="activateStatus" class="activate-status">Перевіряємо посилання…</p>
+      <p id="activateError" class="activate-error"></p>
     </form>
   </div>
 </div>
@@ -84,6 +96,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 <script src="supabase-config.js?v=3"></script>
-<script src="enter.js?v=3"></script>
+<script src="enter.js?v=4"></script>
 </body>
 </html>
