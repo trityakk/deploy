@@ -2,7 +2,7 @@
 (async function () {
   try {
     var target = document.getElementById('cabinetContent');
-    var response = await fetch('cabinet-content.html', { cache: 'default' });
+    var response = await fetch('cabinet-content.html?v=1', { cache: 'default' });
     if (!response.ok) throw new Error('Course content request failed');
     target.innerHTML = await response.text();
 
