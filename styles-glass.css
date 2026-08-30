@@ -511,6 +511,8 @@ button:active,.chapter-nav__btn:active,.mark-read:active{
   color:rgba(8,9,14,0.85);
   background:linear-gradient(135deg,var(--gold),var(--gold));
 }
+/* The active chapter count sits on a red accent; keep it readable in both themes. */
+.overview-tab.active .overview-tab__count{color:#fff}
 .overview-group{display:contents}
 .overview-group--hidden{display:none}
 
