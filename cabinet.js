@@ -10,8 +10,8 @@
   }
 
   // Тонка обгортка над localStorage. localStorage лишається миттєвим
-  // локальним кешем (UI читає саме з нього), а сервер (Apps Script,
-  // action=saveProgress/getProgress) — джерело правди між пристроями.
+  // локальним кешем (UI читає саме з нього), а Supabase — джерело правди
+  // між пристроями.
   // schedulePushProgress визначена нижче (function-декларація, тому
   // доступна тут завдяки hoisting) і сама вирішує, чи ключ взагалі
   // варто синхронізувати.
@@ -37,93 +37,6 @@
     }
   }
 
-  // ─── Налаштування бекенду ───
-  // Встав сюди URL свого Apps Script веб-застосунку (закінчується на /exec).
-  // Див. інструкцію в wayforpay-backend.gs — там же деплоїться сам бекенд.
-  var API_URL = 'ВСТАВ_СЮДИ_URL_ТВОГО_APPS_SCRIPT';
-
-  // doLogin must exist *before* the not-logged-in early return below, since
-  // it's exactly what the login form (shown to logged-out visitors) calls.
-  window.doLogin = function (e) {
-    e.preventDefault();
-    var l = document.getElementById('cabinetLoginInput').value.trim();
-    var p = document.getElementById('cabinetPassInput').value.trim();
-    var error = document.getElementById('cabinetLoginError');
-    var submitBtn = document.querySelector('.login-submit');
-
-    error.style.display = 'none';
-
-    // Клієнтський захист від брутфорсу (дублює серверний). Працює навіть
-    // без бекенду: блокує форму на 15 хв після 5 невдалих спроб.
-    var attempts = safeJSONParse(localStorage.getItem('sa_login_attempts'), { n: 0, until: 0 });
-    var now = Date.now();
-    if (attempts.until && now < attempts.until) {
-      error.style.display = 'block';
-      error.textContent = 'Забагато спроб. Спробуй ще раз через ' + Math.ceil((attempts.until - now) / 60000) + ' хв';
-      return false;
-    }
-
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; }
-
-    // Бекенд ще не налаштований — показуємо зрозуміле повідомлення,
-    // а не голу мережеву помилку.
-    if (!API_URL || API_URL.indexOf('ВСТАВ') === 0) {
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
-      error.style.display = 'block';
-      error.textContent = 'Доступ зараз недоступний. Зачекай — ми налаштовуємо систему.';
-      return false;
-    }
-
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'login', email: l, code: p })
-    })
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        if (data.success) {
-          try { localStorage.removeItem('sa_login_attempts'); } catch (e2) { /* ignore */ }
-          saveProgress('sa_user', data.email);
-          if (data.displayName) saveProgress('sa_display_name', data.displayName);
-          pullProgressFromServer(data.email, function () { location.reload(); });
-        } else {
-          var noAccess = document.getElementById('cabinetNoAccess');
-          if (data.error === 'no_access' && noAccess) {
-            var form = document.querySelector('.login-form');
-            if (form) form.style.display = 'none';
-            var footer = document.querySelector('.modal__footer');
-            if (footer) footer.style.display = 'none';
-            noAccess.style.display = 'block';
-          } else {
-            error.style.display = 'block';
-            if (data.error === 'too_many_attempts') {
-              error.textContent = 'Забагато спроб. Спробуй ще раз через 15 хвилин';
-            } else if (data.error === 'blocked') {
-              error.textContent = 'Доступ заблоковано. Напиши нам, щоб розібратись';
-            } else {
-              error.textContent = 'Невірний email або код доступу';
-              attempts.n += 1;
-              if (attempts.n >= 5) {
-                attempts.n = 0;
-                attempts.until = Date.now() + 15 * 60 * 1000;
-                error.textContent = 'Забагато спроб. Спробуй ще раз через 15 хвилин';
-              }
-              try { localStorage.setItem('sa_login_attempts', JSON.stringify(attempts)); } catch (e2) { /* ignore */ }
-            }
-          }
-        }
-      })
-      .catch(function (err) {
-        console.warn('Помилка перевірки логіна:', err);
-        error.style.display = 'block';
-        error.textContent = 'Не вдалося перевірити дані. Спробуй ще раз.';
-      })
-      .finally(function () {
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
-      });
-
-    return false;
-  };
-
   var user = loadProgress('sa_user', 'guest') || 'guest';
 
   // Раз на сесію вкладки підтягуємо прогрес із сервера — якщо на іншому
@@ -145,8 +58,7 @@
   // перенесення з цього статичного HTML у захищений backend/API.
   if (loginModal) loginModal.style.display = user === 'guest' ? 'flex' : 'none';
 
-  // Новий вхід через Supabase Auth. Старий Apps Script login залишений вище
-  // лише як тимчасовий fallback до повного завершення міграції.
+  // Вхід через Supabase Auth.
   if (window.startAmazonSupabase) {
     window.doLogin = async function (e) {
       e.preventDefault();
