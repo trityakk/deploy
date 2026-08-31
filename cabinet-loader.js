@@ -77,27 +77,40 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
         var login = await window.startAmazonSupabase.auth.signInWithPassword({ email: email, password: password });
         if (login.error) throw login.error;
         var access = await window.startAmazonSupabase.rpc('has_active_course_access');
-        if (access.error || access.data !== true) {
+        if (access.error) {
+          var accessError = new Error('access_check_failed');
+          accessError.cause = access.error;
+          throw accessError;
+        }
+        if (access.data !== true) {
           await window.startAmazonSupabase.auth.signOut();
           throw new Error('no_access');
         }
-        localStorage.setItem('sa_user', email);
-        localStorage.removeItem('sa_token');
         var target = document.getElementById('cabinetContent');
         var content = await window.startAmazonSupabase.storage
           .from('course-content')
           .download('cabinet-content.html');
-        if (content.error) throw content.error;
+        if (content.error) {
+          var contentError = new Error('content_load_failed');
+          contentError.cause = content.error;
+          throw contentError;
+        }
         target.innerHTML = await content.data.text();
+        localStorage.setItem('sa_user', email);
+        localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
         if (loginModal) loginModal.style.display = 'none';
-        await loadScript('cabinet.js?v=58');
+        await loadScript('cabinet.js?v=59');
       } catch (error) {
         if (errorEl) {
           errorEl.style.display = 'block';
           errorEl.textContent = error.message === 'no_access'
             ? 'Для цього email ще немає оплаченного доступу.'
-            : 'Невірний email або пароль.';
+            : error.message === 'access_check_failed'
+              ? 'Не вдалося перевірити доступ до курсу. Онови сторінку та спробуй ще раз.'
+              : error.message === 'content_load_failed'
+                ? 'Доступ підтверджено, але матеріали курсу ще завантажуються. Онови сторінку через кілька секунд.'
+                : 'Невірний email або пароль.';
         }
       } finally {
         if (button) button.disabled = false;
@@ -129,7 +142,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
 
   // Load the application after the protected body (or guest state) is ready.
   try {
-    await loadScript('cabinet.js?v=58');
+    await loadScript('cabinet.js?v=59');
   } catch (error) {
     document.body.classList.add('cabinet-load-error');
     console.error('Не вдалося запустити кабінет.', error);

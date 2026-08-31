@@ -72,7 +72,8 @@
         var result = await window.startAmazonSupabase.auth.signInWithPassword({ email: email, password: password });
         if (result.error) throw result.error;
         var access = await window.startAmazonSupabase.rpc('has_active_course_access');
-        if (access.error || access.data !== true) {
+        if (access.error) throw access.error;
+        if (access.data !== true) {
           await window.startAmazonSupabase.auth.signOut();
           throw new Error('no_access');
         }
