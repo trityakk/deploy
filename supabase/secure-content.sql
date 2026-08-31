@@ -13,13 +13,7 @@ to authenticated
 using (
   bucket_id = 'course-content'
   and name = 'cabinet-content.html'
-  and exists (
-    select 1
-    from public.entitlements e
-    where lower(e.email) = lower(coalesce(auth.jwt() ->> 'email', ''))
-      and e.product = 'amazon-course'
-      and e.status = 'active'
-  )
+  and public.has_active_course_access()
   );
 
 -- The browser uses this small definer function before downloading the file.
