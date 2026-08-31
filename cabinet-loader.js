@@ -83,7 +83,15 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
         }
         localStorage.setItem('sa_user', email);
         localStorage.removeItem('sa_token');
-        window.location.reload();
+        var target = document.getElementById('cabinetContent');
+        var content = await window.startAmazonSupabase.storage
+          .from('course-content')
+          .download('cabinet-content.html');
+        if (content.error) throw content.error;
+        target.innerHTML = await content.data.text();
+        document.body.classList.remove('cabinet-guest');
+        if (loginModal) loginModal.style.display = 'none';
+        await loadScript('cabinet.js?v=58');
       } catch (error) {
         if (errorEl) {
           errorEl.style.display = 'block';
