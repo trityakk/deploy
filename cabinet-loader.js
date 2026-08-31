@@ -1,3 +1,14 @@
+// Recovery links occasionally arrive at cabinet.html when Supabase uses the
+// project's default Site URL. Route them to the password-creation screen.
+var cabinetRecoverySearch = new URLSearchParams(window.location.search);
+var cabinetRecoveryHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === 'recovery' || cabinetRecoveryHash.get('type') === 'recovery') {
+  var cabinetRecoveryUrl = new URL('enter.html', window.location.href);
+  cabinetRecoveryUrl.searchParams.set('mode', 'activate');
+  cabinetRecoveryUrl.hash = window.location.hash;
+  window.location.replace(cabinetRecoveryUrl.href);
+}
+
 // Load the course body before the application code starts.
 (async function () {
   var accessGranted = false;

@@ -8,6 +8,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <script>if(history.scrollRestoration)history.scrollRestoration='manual';</script>
+<script>
+  // Recovery links must always open the password-creation screen, even when
+  // Supabase falls back to the project's default Site URL.
+  var recoverySearch = new URLSearchParams(window.location.search);
+  var recoveryHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  if (recoverySearch.has('code') || recoverySearch.get('type') === 'recovery' || recoveryHash.get('type') === 'recovery') {
+    var recoveryUrl = new URL('enter.html', window.location.href);
+    recoveryUrl.searchParams.set('mode', 'activate');
+    recoveryUrl.hash = window.location.hash;
+    window.location.replace(recoveryUrl.href);
+  }
+</script>
 <title>Старт на Amazon — курс Amazon FBA для українців · 2026</title>
 <link rel="preload" as="font" href="font/Unbounded.woff2" type="font/woff2" crossorigin>
 <link rel="preload" as="font" href="font/e-Ukraine/e-Ukraine-Regular.otf" type="font/otf" crossorigin>
