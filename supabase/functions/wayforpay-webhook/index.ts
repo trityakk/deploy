@@ -86,26 +86,26 @@ Deno.serve(async (request) => {
       }, { onConflict: 'email_normalized,product' });
       if (entitlementError) throw entitlementError;
 
+      const temporaryPassword = crypto.randomUUID().replaceAll('-', '') + crypto.randomUUID().slice(0, 8);
       const { data: userList } = await admin.auth.admin.listUsers({ perPage: 1000 });
       const user = userList?.users.find((item) => item.email?.toLowerCase() === email);
-      if (!user) {
+      if (user) {
+        const { error: updateError } = await admin.auth.admin.updateUserById(user.id, {
+          password: temporaryPassword,
+          email_confirm: true,
+        });
+        if (updateError) throw updateError;
+      } else {
         const { error: createError } = await admin.auth.admin.createUser({
           email,
           email_confirm: true,
-          password: crypto.randomUUID() + crypto.randomUUID(),
+          password: temporaryPassword,
         });
         if (createError && !/already registered/i.test(createError.message)) throw createError;
       }
 
       if (!resendApiKey) throw new Error('RESEND_API_KEY is not configured');
-      const link = await admin.auth.admin.generateLink({
-        type: 'recovery',
-        email,
-        options: { redirectTo: `${appUrl}/enter.html?mode=activate` },
-      });
-      if (link.error || !link.data?.properties?.action_link) {
-        throw link.error || new Error('activation_link_not_created');
-      }
+      const cabinetUrl = `${appUrl.replace(/\/+$/, '')}/cabinet.html`;
       const mail = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -128,11 +128,15 @@ Deno.serve(async (request) => {
         <div style="padding:32px">
           <div style="display:inline-block;padding:8px 12px;border-radius:999px;background:#e7f7ed;color:#18733b;font-size:13px;font-weight:700">Оплату підтверджено ✓</div>
           <h1 style="margin:22px 0 12px;font-size:25px;line-height:1.2">Вітаємо на курсі Amazon!</h1>
-          <p style="margin:0;color:#5c5c5c;font-size:16px;line-height:1.6">Створи пароль, щоб увійти до особистого кабінету та відкрити всі матеріали курсу.</p>
-          <div style="padding:24px 0 8px;text-align:center">
-            <a href="${link.data.properties.action_link}" style="display:inline-block;padding:15px 24px;border-radius:12px;background:#d9ae63;color:#171717;text-decoration:none;font-size:16px;font-weight:700">Створити пароль і відкрити кабінет</a>
+          <p style="margin:0;color:#5c5c5c;font-size:16px;line-height:1.6">Ось дані для входу до особистого кабінету. Пароль тимчасовий — його можна змінити пізніше.</p>
+          <div style="margin-top:22px;padding:18px 20px;border-radius:12px;background:#f5f3ee;font-size:15px;line-height:1.8">
+            <div><strong>Email:</strong> ${email}</div>
+            <div><strong>Тимчасовий пароль:</strong> <span style="font-family:monospace;word-break:break-all">${temporaryPassword}</span></div>
           </div>
-          <p style="margin:22px 0 0;color:#8a8a8a;font-size:13px;line-height:1.5">Якщо кнопка не відкривається, скопіюй посилання з цього листа та відкрий його у браузері. Посилання одноразове.</p>
+          <div style="padding:24px 0 8px;text-align:center">
+            <a href="${cabinetUrl}" style="display:inline-block;padding:15px 24px;border-radius:12px;background:#d9ae63;color:#171717;text-decoration:none;font-size:16px;font-weight:700">Увійти до кабінету</a>
+          </div>
+          <p style="margin:22px 0 0;color:#8a8a8a;font-size:13px;line-height:1.5">Якщо кнопка не відкривається, відкрий кабінет вручну та введи email і тимчасовий пароль.</p>
         </div>
         <div style="padding:20px 32px;background:#fafafa;color:#8a8a8a;font-size:12px;line-height:1.5">Це автоматичний лист після оплати курсу «Старт на Amazon».</div>
       </div>
