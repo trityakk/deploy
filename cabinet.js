@@ -53,6 +53,52 @@
   })();
 
   var loginModal = document.getElementById('cabinetLoginModal');
+  var passwordChangeModal = document.getElementById('passwordChangeModal');
+  var passwordChangeForm = document.getElementById('passwordChangeForm');
+  var passwordChangeError = document.getElementById('passwordChangeError');
+  var passwordChangeSuccess = document.getElementById('passwordChangeSuccess');
+  window.openPasswordChange = function () {
+    if (!passwordChangeModal) return;
+    passwordChangeModal.style.display = 'flex';
+    passwordChangeModal.setAttribute('aria-hidden', 'false');
+    if (passwordChangeError) passwordChangeError.style.display = 'none';
+    if (passwordChangeSuccess) passwordChangeSuccess.style.display = 'none';
+    var first = document.getElementById('newPassword');
+    if (first) first.focus();
+  };
+  function closePasswordChange() {
+    if (!passwordChangeModal) return;
+    passwordChangeModal.style.display = 'none';
+    passwordChangeModal.setAttribute('aria-hidden', 'true');
+    if (passwordChangeForm) passwordChangeForm.reset();
+  }
+  document.querySelectorAll('[data-close-password-modal]').forEach(function (el) {
+    el.addEventListener('click', closePasswordChange);
+  });
+  if (passwordChangeForm) passwordChangeForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+    var password = document.getElementById('newPassword').value;
+    var repeat = document.getElementById('newPasswordAgain').value;
+    if (password !== repeat) {
+      passwordChangeError.textContent = 'Паролі не збігаються.';
+      passwordChangeError.style.display = 'block';
+      return;
+    }
+    var button = passwordChangeForm.querySelector('button[type="submit"]');
+    button.disabled = true;
+    passwordChangeError.style.display = 'none';
+    try {
+      var result = await window.startAmazonSupabase.auth.updateUser({ password: password });
+      if (result.error) throw result.error;
+      passwordChangeSuccess.style.display = 'block';
+      setTimeout(closePasswordChange, 900);
+    } catch (error) {
+      passwordChangeError.textContent = 'Не вдалося змінити пароль. Спробуй ще раз.';
+      passwordChangeError.style.display = 'block';
+    } finally {
+      button.disabled = false;
+    }
+  });
   // Гість не повинен бачити кабінет або мати можливість взаємодіяти з ним.
   // Важливо: це лише UI-запобіжник; повний захист контенту потребує його
   // перенесення з цього статичного HTML у захищений backend/API.

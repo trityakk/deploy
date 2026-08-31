@@ -335,6 +335,8 @@ button:active,.chapter-nav__btn:active,.mark-read:active{
   margin-top:20px;font-size:var(--fs-sm2);color:var(--ink-faint);
   text-align:center;
 }
+.password-change-card{max-width:460px}
+.password-change-success{display:none;margin-top:14px;text-align:center;color:#8ee3b0;font-size:13px}
 .cabinet-no-access{text-align:center;padding:10px 0}
 
 .cabinet-no-access__msg{font-size:var(--fs-lg);font-weight:700;color:var(--ink);margin-bottom:8px}
