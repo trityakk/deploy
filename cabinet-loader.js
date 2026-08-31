@@ -23,6 +23,22 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
     });
   }
 
+  async function downloadCourseContent() {
+    var lastError;
+    for (var attempt = 0; attempt < 2; attempt += 1) {
+      if (attempt > 0) {
+        await window.startAmazonSupabase.auth.getSession();
+        await new Promise(function (resolve) { setTimeout(resolve, 450); });
+      }
+      var result = await window.startAmazonSupabase.storage
+        .from('course-content')
+        .download('cabinet-content.html');
+      if (!result.error && result.data) return result.data;
+      lastError = result.error || new Error('empty_course_content');
+    }
+    throw lastError;
+  }
+
   try {
     var target = document.getElementById('cabinetContent');
     for (const src of [
@@ -87,15 +103,15 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
           throw new Error('no_access');
         }
         var target = document.getElementById('cabinetContent');
-        var content = await window.startAmazonSupabase.storage
-          .from('course-content')
-          .download('cabinet-content.html');
-        if (content.error) {
+        var contentFile;
+        try {
+          contentFile = await downloadCourseContent();
+        } catch (storageError) {
           var contentError = new Error('content_load_failed');
-          contentError.cause = content.error;
+          contentError.cause = storageError;
           throw contentError;
         }
-        target.innerHTML = await content.data.text();
+        target.innerHTML = await contentFile.text();
         localStorage.setItem('sa_user', email);
         localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
@@ -109,7 +125,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
             : error.message === 'access_check_failed'
               ? 'Не вдалося перевірити доступ до курсу. Онови сторінку та спробуй ще раз.'
               : error.message === 'content_load_failed'
-                ? 'Доступ підтверджено, але матеріали курсу ще завантажуються. Онови сторінку через кілька секунд.'
+                ? 'Доступ підтверджено, але Storage не віддав матеріали курсу. Онови сторінку через кілька секунд.'
                 : 'Невірний email або пароль.';
         }
       } finally {
