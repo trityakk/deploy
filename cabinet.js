@@ -53,6 +53,21 @@
   })();
 
   var loginModal = document.getElementById('cabinetLoginModal');
+  var accountMenu = document.getElementById('sidebarAccountMenu');
+  var accountTrigger = document.getElementById('sidebarAccountTrigger');
+  window.toggleAccountMenu = function (event) {
+    if (event) event.stopPropagation();
+    if (!accountMenu) return;
+    accountMenu.hidden = !accountMenu.hidden;
+    if (accountTrigger) accountTrigger.setAttribute('aria-expanded', accountMenu.hidden ? 'false' : 'true');
+  };
+  document.addEventListener('click', function (event) {
+    if (!accountMenu || accountMenu.hidden) return;
+    if (!accountMenu.contains(event.target) && event.target !== accountTrigger) {
+      accountMenu.hidden = true;
+      if (accountTrigger) accountTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
   var passwordChangeModal = document.getElementById('passwordChangeModal');
   var passwordChangeForm = document.getElementById('passwordChangeForm');
   var passwordChangeError = document.getElementById('passwordChangeError');
