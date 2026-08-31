@@ -116,7 +116,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
         localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
         if (loginModal) loginModal.style.display = 'none';
-        await loadScript('cabinet.js?v=59');
+        await loadScript('cabinet.js?v=60');
       } catch (error) {
         if (errorEl) {
           errorEl.style.display = 'block';
@@ -158,7 +158,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
 
   // Load the application after the protected body (or guest state) is ready.
   try {
-    await loadScript('cabinet.js?v=59');
+    await loadScript('cabinet.js?v=60');
   } catch (error) {
     document.body.classList.add('cabinet-load-error');
     console.error('Не вдалося запустити кабінет.', error);
