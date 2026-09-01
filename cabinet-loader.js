@@ -13,6 +13,29 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
 (async function () {
   var accessGranted = false;
 
+  function clearLocalAccountState() {
+    var keys = [
+      'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
+      'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak',
+      'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab',
+      'sa_sidebar_open_mobile', 'sa_display_name'
+    ];
+    keys.forEach(function (key) { localStorage.removeItem(key); });
+    var dynamic = [];
+    for (var i = 0; i < localStorage.length; i += 1) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('hw_marked_') === 0) dynamic.push(key);
+    }
+    dynamic.forEach(function (key) { localStorage.removeItem(key); });
+  }
+
+  function setCurrentLocalUser(email) {
+    var next = String(email || '').toLowerCase();
+    var previous = String(localStorage.getItem('sa_user') || '').toLowerCase();
+    if (previous && next && previous !== next) clearLocalAccountState();
+    localStorage.setItem('sa_user', next);
+  }
+
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
       var script = document.createElement('script');
@@ -54,7 +77,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
       var access = await window.startAmazonSupabase.rpc('has_active_course_access');
       if (access.error) throw access.error;
       if (access.data === true) {
-        localStorage.setItem('sa_user', session.user.email.toLowerCase());
+        setCurrentLocalUser(session.user.email);
         var content = await window.startAmazonSupabase.storage
           .from('course-content')
           .download('cabinet-content.html');
@@ -113,11 +136,11 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
           throw contentError;
         }
         target.innerHTML = await contentFile.text();
-        localStorage.setItem('sa_user', email);
+        setCurrentLocalUser(email);
         localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
         if (loginModal) loginModal.style.display = 'none';
-        await loadScript('cabinet.js?v=71');
+        await loadScript('cabinet.js?v=72');
       } catch (error) {
         if (errorEl) {
           errorEl.style.display = 'block';
@@ -159,7 +182,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
 
   // Load the application after the protected body (or guest state) is ready.
   try {
-    await loadScript('cabinet.js?v=71');
+    await loadScript('cabinet.js?v=72');
   } catch (error) {
     document.body.classList.add('cabinet-load-error');
     console.error('Не вдалося запустити кабінет.', error);

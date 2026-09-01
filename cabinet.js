@@ -286,6 +286,9 @@
         updated_at: new Date().toISOString()
       }, { onConflict: 'id' }).then(function (result) {
         if (result.error) throw result.error;
+        return window.startAmazonSupabase.auth.updateUser({
+          data: { display_name: cleanValue === user ? null : cleanValue }
+        });
       });
     }).catch(function (error) {
       console.warn('Не вдалося зберегти ім’я профілю:', error);
@@ -324,8 +327,13 @@
         .select('display_name')
         .eq('id', session.user.id)
         .maybeSingle();
-    }).then(function (result) {
+    }).then(async function (result) {
       var serverName = result && result.data && result.data.display_name;
+      if (!serverName) {
+        var sessionResult = await window.startAmazonSupabase.auth.getSession();
+        var sessionUser = sessionResult && sessionResult.data && sessionResult.data.session && sessionResult.data.session.user;
+        serverName = sessionUser && sessionUser.user_metadata && sessionUser.user_metadata.display_name;
+      }
       if (serverName) {
         displayName = serverName;
         nameEl.textContent = serverName;
