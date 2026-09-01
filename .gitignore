@@ -1,2 +1,7 @@
 # Private course source is uploaded to Supabase Storage, never to GitHub.
 /private-course-content/
+
+# Local machine and Supabase CLI artifacts.
+.DS_Store
+.npm-cache/
+supabase/.temp/
