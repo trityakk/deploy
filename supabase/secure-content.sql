@@ -29,7 +29,8 @@ as $$
   select exists (
     select 1
     from public.entitlements
-    where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+    where (user_id = auth.uid()
+      or (user_id is null and lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))))
       and product = 'amazon-course'
       and status = 'active'
   );

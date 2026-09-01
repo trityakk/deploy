@@ -968,21 +968,8 @@ body.tour-locked{overflow:hidden}
 .sidebar__name{font-size:13px;color:var(--ink);font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.01em}
 .sidebar__name-wrap{display:flex;align-items:center;gap:4px;flex:1;min-width:0}
 .sidebar__name-wrap .sidebar__name{flex:1}
-.sidebar__name-edit{
-  display:flex;align-items:center;justify-content:center;
-  width:26px;height:26px;flex-shrink:0;
-  border:none;border-radius:8px;
-  background:transparent;color:var(--ink-faint);
-  cursor:pointer;transition:background .2s var(--ease), color .2s var(--ease);
-}
-.sidebar__account-trigger{width:32px;height:32px;border-radius:6px;background:transparent}
-.sidebar__account-trigger svg{width:20px;height:20px;stroke-width:2;transform:none}
-.sidebar__account-trigger:hover{background:transparent;color:var(--ink)}
-.sidebar__account-trigger{display:none}
 .sidebar__avatar{padding:0;cursor:pointer;background:transparent;font:inherit}
 .sidebar__avatar:hover{transform:scale(1.04);border-color:rgba(255,255,255,.2)}
-.sidebar__name-edit svg{width:13px;height:13px}
-.sidebar__name-edit:hover{background:rgba(255,255,255,0.07);color:var(--ink)}
 .sidebar__account-menu{position:absolute;top:62px;right:48px;z-index:30;min-width:164px;padding:6px;border:1px solid var(--glass-border);border-radius:12px;background:rgba(20,22,29,.94);box-shadow:0 14px 35px rgba(0,0,0,.35);backdrop-filter:blur(16px)}
 .sidebar__account-menu[hidden]{display:none}
 .sidebar__account-menu button{display:block;width:100%;padding:9px 10px;border:0;border-radius:8px;background:transparent;color:var(--ink-dim);text-align:left;font:inherit;font-size:12px;cursor:pointer}

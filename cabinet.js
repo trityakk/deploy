@@ -1024,7 +1024,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     openBtn.addEventListener('mouseenter', function (e) { showTip(openBtn, 'Відкрити бічну панель', e); });
     openBtn.addEventListener('mouseleave', hideTip);
   }
-  document.querySelectorAll('.sidebar__logout, .sidebar__name-edit, .sidebar__avatar, .sidebar__progress, .sidebar__tool').forEach(function (b) {
+  document.querySelectorAll('.sidebar__logout, .sidebar__avatar, .sidebar__progress, .sidebar__tool').forEach(function (b) {
     bindTip(b, b.getAttribute('data-tip') || b.getAttribute('title') || '');
   });
 

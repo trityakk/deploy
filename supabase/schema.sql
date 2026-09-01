@@ -30,6 +30,7 @@ create index if not exists orders_email_idx on public.orders (lower(email));
 
 create table if not exists public.entitlements (
   id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users(id) on delete cascade,
   email text not null,
   email_normalized text generated always as (lower(email)) stored,
   product text not null default 'amazon-course',
@@ -43,6 +44,8 @@ create table if not exists public.entitlements (
 
 create index if not exists entitlements_email_idx
   on public.entitlements (lower(email), product, status);
+create index if not exists entitlements_user_idx
+  on public.entitlements (user_id, product, status);
 
 create table if not exists public.course_progress (
   user_id uuid primary key references auth.users(id) on delete cascade,
@@ -69,7 +72,10 @@ create policy "profile owner can insert" on public.profiles
 
 drop policy if exists "user can read own entitlement" on public.entitlements;
 create policy "user can read own entitlement" on public.entitlements
-  for select using (lower(email) = lower(coalesce(auth.jwt() ->> 'email', '')));
+  for select using (
+    auth.uid() = user_id
+    or (user_id is null and lower(email) = lower(coalesce(auth.jwt() ->> 'email', '')))
+  );
 
 drop policy if exists "user can read own progress" on public.course_progress;
 create policy "user can read own progress" on public.course_progress
@@ -121,7 +127,8 @@ as $$
   select exists (
     select 1
     from public.entitlements
-    where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))
+    where (user_id = auth.uid()
+      or (user_id is null and lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))))
       and product = 'amazon-course'
       and status = 'active'
   );

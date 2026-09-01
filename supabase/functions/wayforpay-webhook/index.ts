@@ -147,6 +147,11 @@ Deno.serve(async (request) => {
       if (!temporaryPassword && !existing?.access_email_sent_at) {
         throw new Error('temporary_password_unavailable');
       }
+      const { error: entitlementUserError } = await admin.from('entitlements')
+        .update({ user_id: user.id })
+        .eq('source_order_reference', reference)
+        .eq('product', productId);
+      if (entitlementUserError) throw entitlementUserError;
       const cabinetUrl = `${appUrl.replace(/\/+$/, '')}/cabinet.html`;
       const safeEmail = escapeHtml(email);
       const safePassword = escapeHtml(temporaryPassword);
