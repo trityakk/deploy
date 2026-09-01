@@ -12,6 +12,26 @@ body.flash-panel-open .sidebar {
   will-change: filter, opacity;
 }
 
+/* Keep the login screen visually consistent with the activation screen. */
+#cabinetLoginModal .modal__overlay {
+  overflow: hidden;
+  background: rgba(5, 7, 10, .68);
+}
+
+#cabinetLoginModal .modal__overlay::before {
+  content: '';
+  position: absolute;
+  inset: -24px;
+  background: url('photo/LB.png') center / cover no-repeat;
+  filter: blur(16px) saturate(1.08) sepia(.08) brightness(.62);
+  transform: scale(1.04);
+  z-index: 0;
+}
+
+#cabinetLoginModal .modal__card {
+  z-index: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.flash-panel-open .sidebar {
     transition: none;
