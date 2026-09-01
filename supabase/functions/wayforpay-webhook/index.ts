@@ -107,16 +107,6 @@ Deno.serve(async (request) => {
     if (orderError) throw orderError;
 
     if (approved) {
-      const { error: entitlementError } = await admin.from('entitlements').upsert({
-        email,
-        product: productId,
-        status: 'active',
-        source_order_reference: reference,
-        granted_at: new Date().toISOString(),
-        revoked_at: null,
-      }, { onConflict: 'email_normalized,product' });
-      if (entitlementError) throw entitlementError;
-
       if (existing?.status === 'approved' && existing.access_email_sent_at) {
         return wayforpayResponse(reference);
       }
@@ -147,11 +137,16 @@ Deno.serve(async (request) => {
       if (!temporaryPassword && !existing?.access_email_sent_at) {
         throw new Error('temporary_password_unavailable');
       }
-      const { error: entitlementUserError } = await admin.from('entitlements')
-        .update({ user_id: user.id })
-        .eq('source_order_reference', reference)
-        .eq('product', productId);
-      if (entitlementUserError) throw entitlementUserError;
+      const { error: entitlementError } = await admin.from('entitlements').upsert({
+        user_id: user.id,
+        email,
+        product: productId,
+        status: 'active',
+        source_order_reference: reference,
+        granted_at: new Date().toISOString(),
+        revoked_at: null,
+      }, { onConflict: 'email_normalized,product' });
+      if (entitlementError) throw entitlementError;
       const cabinetUrl = `${appUrl.replace(/\/+$/, '')}/cabinet.html`;
       const safeEmail = escapeHtml(email);
       const safePassword = escapeHtml(temporaryPassword);

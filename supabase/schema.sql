@@ -30,7 +30,7 @@ create index if not exists orders_email_idx on public.orders (lower(email));
 
 create table if not exists public.entitlements (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
   email text not null,
   email_normalized text generated always as (lower(email)) stored,
   product text not null default 'amazon-course',
@@ -72,10 +72,7 @@ create policy "profile owner can insert" on public.profiles
 
 drop policy if exists "user can read own entitlement" on public.entitlements;
 create policy "user can read own entitlement" on public.entitlements
-  for select using (
-    auth.uid() = user_id
-    or (user_id is null and lower(email) = lower(coalesce(auth.jwt() ->> 'email', '')))
-  );
+  for select using (auth.uid() = user_id);
 
 drop policy if exists "user can read own progress" on public.course_progress;
 create policy "user can read own progress" on public.course_progress
@@ -113,7 +110,7 @@ with (security_invoker = true) as
 select e.email, e.product, e.status
 from public.entitlements e
 where e.status = 'active'
-  and lower(e.email) = lower(coalesce(auth.jwt() ->> 'email', ''));
+  and e.user_id = auth.uid();
 
 -- Безпечна перевірка доступу для frontend. Не повертає дані замовлення,
 -- лише true/false, тому RLS таблиці не заважає перевірці сесії.
@@ -127,8 +124,7 @@ as $$
   select exists (
     select 1
     from public.entitlements
-    where (user_id = auth.uid()
-      or (user_id is null and lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''))))
+    where user_id = auth.uid()
       and product = 'amazon-course'
       and status = 'active'
   );
