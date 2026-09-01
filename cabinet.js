@@ -57,14 +57,11 @@
     } catch (e) {}
   }
 
-  // Раз на сесію вкладки підтягуємо прогрес із сервера — якщо на іншому
-  // пристрої щось змінилось, тут воно з'явиться після одного reload.
-  // sessionStorage-прапорець рятує від зациклення (він переживає
-  // location.reload(), але зникає із закриттям вкладки).
+  // При кожному відкритті підтягуємо прогрес із сервера. Це важливо після
+  // першого входу: sessionStorage міг залишити прапорець навіть тоді, коли
+  // попередній запит не завершився або був перерваний.
   (function syncOnEntry() {
     if (user === 'guest') return;
-    if (sessionStorage.getItem('sa_progress_synced') === '1') return;
-    sessionStorage.setItem('sa_progress_synced', '1');
     pullProgressFromServer(user, function (changed) {
       if (changed) location.reload();
     });
@@ -907,18 +904,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   }
 
   var pushTimer = null;
-  function schedulePushProgress(key) {
-    if (!backendReady() || !isSyncKey(key)) return;
-    var email = currentUserEmail();
-    if (!email) return;
-    clearTimeout(pushTimer);
-    // Дебаунс: чекаємо паузу в діях (1.5с), щоб не бити по бекенду
-    // на кожен клік — за читання розділу типово прилітає кілька
-    // saveProgress() підряд (позначка прочитаного + активна вкладка тощо).
-    pushTimer = setTimeout(function () { pushProgressNow(email); }, 1500);
-  }
-
-  function pushProgressNow(email) {
+  function buildProgressSnapshot() {
     var snapshot = {};
     for (var i = 0; i < localStorage.length; i += 1) {
       var k = localStorage.key(i);
@@ -926,6 +912,21 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       var v = localStorage.getItem(k);
       if (v !== null) snapshot[k] = v;
     }
+    return snapshot;
+  }
+  function schedulePushProgress(key) {
+    if (!backendReady() || !isSyncKey(key)) return;
+    var email = currentUserEmail();
+    if (!email) return;
+    clearTimeout(pushTimer);
+    // Дебаунс: чекаємо коротку паузу в діях, щоб не бити по бекенду
+    // на кожен клік — за читання розділу типово прилітає кілька
+    // saveProgress() підряд (позначка прочитаного + активна вкладка тощо).
+    pushTimer = setTimeout(function () { pushProgressNow(email); }, 500);
+  }
+
+  function pushProgressNow(email) {
+    var snapshot = buildProgressSnapshot();
     return window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
       if (!session || !session.user) return;
@@ -973,27 +974,37 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       })
       .then(function (result) {
         var changed = false;
+        if (result && result.error) throw result.error;
         var serverData = result && result.data && result.data.data;
-        if (serverData) {
-          var data = typeof serverData === 'string' ? safeJSONParse(serverData, null) : serverData;
-          if (data && typeof data === 'object') {
-            Object.keys(data).forEach(function (k) {
+        var serverObject = serverData && typeof serverData === 'object'
+          ? serverData
+          : (typeof serverData === 'string' ? safeJSONParse(serverData, {}) : {});
+        if (Object.keys(serverObject).length > 0) {
+          Object.keys(serverObject).forEach(function (k) {
               if (!isSyncKey(k)) return;
-              if (localStorage.getItem(k) !== data[k]) {
-                localStorage.setItem(k, data[k]);
+              if (localStorage.getItem(k) !== serverObject[k]) {
+                localStorage.setItem(k, serverObject[k]);
                 changed = true;
               }
             });
-          }
-        } else {
+        } else if (Object.keys(buildProgressSnapshot()).length > 0) {
           // Перший вхід після міграції: зберігаємо локальний прогрес
-          // у профіль Supabase, щоб його не втратити.
-          pushProgressNow(email);
+          // у профілі Supabase, навіть якщо рядок уже існує з data = {}.
+          return pushProgressNow(email).then(function () {
+            if (done) done(false);
+          });
         }
         if (done) done(changed);
       })
       .catch(function () { if (done) done(false); });
   }
+
+  // Якщо користувач одразу оновив або закрив сторінку після кліку, debounce
+  // може ще не встигнути відправити дані. Остання спроба також виконується
+  // при виході зі сторінки; це не замінює debounce, а страхує його.
+  window.addEventListener('pagehide', function () {
+    if (user !== 'guest') pushProgressNow(user);
+  });
 
   var toggleBtn = document.querySelector('.sidebar__toggle');
   var openBtn = document.querySelector('.sidebar-open-btn');
