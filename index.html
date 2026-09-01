@@ -1099,6 +1099,13 @@ var modalContent = {
   }
 };
 function openModal(type) {
+  var cookieBanner = document.getElementById('cookie-banner');
+  if (cookieBanner) {
+    cookieBanner.dataset.pausedByModal = '1';
+    cookieBanner.style.opacity = '0';
+    cookieBanner.style.transform = 'translateY(24px)';
+    cookieBanner.style.pointerEvents = 'none';
+  }
   document.getElementById('modal-title').textContent = modalContent[type].title;
   document.getElementById('modal-body').innerHTML = modalContent[type].body;
   document.getElementById('modal-overlay').classList.add('open');
@@ -1107,6 +1114,15 @@ function openModal(type) {
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
+  var cookieBanner = document.getElementById('cookie-banner');
+  if (cookieBanner && cookieBanner.dataset.pausedByModal === '1') {
+    delete cookieBanner.dataset.pausedByModal;
+    if (!localStorage.getItem('cookies_ok')) {
+      cookieBanner.style.opacity = '1';
+      cookieBanner.style.transform = 'translateY(0)';
+      cookieBanner.style.pointerEvents = 'auto';
+    }
+  }
 }
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
 
@@ -1392,6 +1408,7 @@ function animateCounter(el, target, duration){
   if(localStorage.getItem('cookies_ok')==='0') return;
 
   setTimeout(function(){
+    if(document.getElementById('modal-overlay')?.classList.contains('open')) return;
     var b = document.getElementById('cookie-banner');
     b.style.opacity='1';
     b.style.transform='translateY(0)';
