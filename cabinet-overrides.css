@@ -35,6 +35,14 @@ body.flash-panel-open .sidebar {
   opacity: .52;
 }
 
+/* Dark theme: keep the card lift, remove the distracting colored outline. */
+:root:not([data-theme="light"]) .chapter-card:hover,
+:root:not([data-theme="light"]) .chapter-card--exam,
+:root:not([data-theme="light"]) .chapter-card--exam:hover {
+  border-color: rgba(255, 255, 255, .09);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .24);
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.flash-panel-open .sidebar {
     transition: none;
