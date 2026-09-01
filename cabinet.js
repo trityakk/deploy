@@ -257,6 +257,14 @@
   if (statsOverlayEl) {
     document.body.appendChild(statsOverlayEl);
   }
+  var progressTrigger = document.getElementById('sidebarProgress');
+  if (progressTrigger) {
+    progressTrigger.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      showStatsPanel();
+    });
+  }
 
   var displayName = loadProgress('sa_display_name', '');
   var nameEl = document.getElementById('sidebarName');

@@ -43,11 +43,11 @@
 <aside class="sidebar open" id="sidebar">
 <div class="sidebar__header">
 <a href="#" class="sidebar__logo" onclick="event.preventDefault();showOverview()"><span class="sidebar__logo-text"><span>Навчальна</span><b>платформа</b></span></a>
-<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Перемкнути тему">
+<button type="button" class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Перемкнути тему" aria-label="Перемкнути тему">
 <svg class="theme-toggle__sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="4.2" y1="4.2" x2="5.9" y2="5.9"/><line x1="18.1" y1="18.1" x2="19.8" y2="19.8"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/><line x1="4.2" y1="19.8" x2="5.9" y2="18.1"/><line x1="18.1" y1="5.9" x2="19.8" y2="4.2"/></svg>
 <svg class="theme-toggle__moon" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.6 2.6c.3 0 .5.3.4.6-1.4 3-.9 6.7 1.5 9.1 2.4 2.4 6.1 2.9 9.1 1.5.3-.1.6.1.6.4 0 .1 0 .2-.1.3A10 10 0 1 1 12.3 2.6c.1 0 .2 0 .3 0z"/></svg>
 </button>
-<button class="sidebar__toggle" onclick="toggleSidebar()">
+<button type="button" class="sidebar__toggle" onclick="toggleSidebar()" aria-label="Перемкнути бічну панель">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18"/></svg>
 </button>
 </div>
@@ -62,7 +62,7 @@
   <button type="button" onclick="document.getElementById('sidebarAccountMenu').hidden=true;openPasswordChange()">Змінити пароль</button>
 </div>
 </div>
-<button class="sidebar__logout" onclick="doLogout()" data-tip="Вийти з кабінету">
+<button type="button" class="sidebar__logout" onclick="doLogout()" data-tip="Вийти з кабінету" aria-label="Вийти з кабінету">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
 </button>
 </div>
@@ -165,11 +165,11 @@
 </div>
 </nav>
 <div class="sidebar__tools">
-<button class="sidebar__tool" onclick="openFlashPanel()" data-tip="Flash-картки для повторення">
+<button type="button" class="sidebar__tool" onclick="openFlashPanel()" data-tip="Flash-картки для повторення">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
 <span>Повторення</span>
 </button>
-<button class="sidebar__tool" onclick="printCurrentChapter()" data-tip="Роздрукувати поточний розділ">
+<button type="button" class="sidebar__tool" onclick="printCurrentChapter()" data-tip="Роздрукувати поточний розділ">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
 <span>Роздрукувати</span>
 </button>
@@ -177,7 +177,7 @@
 </aside>
 <script src="cabinet-early.js"></script>
 
-<button class="sidebar-open-btn" onclick="toggleSidebar()">
+<button type="button" class="sidebar-open-btn" onclick="toggleSidebar()" aria-label="Відкрити бічну панель">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18"/><path d="M14 9l-3 3 3 3"/></svg>
 </button>
 <div id="global-tooltip"></div>
@@ -189,8 +189,8 @@
 <h3 class="tour__pop-title" id="tourTitle"></h3>
 <p class="tour__pop-text" id="tourText"></p>
 <div class="tour__pop-controls">
-<button class="tour__pop-skip" id="tourSkip" onclick="skipTour()">Пропустити</button>
-<button class="tour__pop-next" id="tourNext" onclick="nextTour()">Далі →</button>
+<button type="button" class="tour__pop-skip" id="tourSkip" onclick="skipTour()">Пропустити</button>
+<button type="button" class="tour__pop-next" id="tourNext" onclick="nextTour()">Далі →</button>
 </div>
 </div>
 <div class="tour__dot" id="tourDot"></div>
@@ -199,6 +199,6 @@
 <main class="cabinet__main">
 <div id="cabinetContent"></div>
 </main>
-<script src="cabinet-loader.js?v=15"></script>
+<script src="cabinet-loader.js?v=16"></script>
 </body>
 </html>
