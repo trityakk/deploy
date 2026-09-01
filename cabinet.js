@@ -895,7 +895,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       var v = localStorage.getItem(k);
       if (v !== null) snapshot[k] = v;
     });
-    window.startAmazonSupabase.auth.getSession().then(function (result) {
+    return window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
       if (!session || !session.user) return;
       return window.startAmazonSupabase.from('course_progress').upsert({
@@ -903,9 +903,24 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
         data: snapshot,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id' });
-    }).catch(function () {
-      // Тиха невдача: локальний прогрес усе одно зберігається.
+    }).then(function (result) {
+      if (result && result.error) throw result.error;
+      return true;
+    }).catch(function (error) {
+      console.warn('Не вдалося синхронізувати прогрес, буде повтор:', error);
+      return false;
     });
+  }
+
+  // Після першого входу гарантовано створюємо серверний запис навіть якщо
+  // користувач ще нічого не натиснув у кабінеті.
+  if (user !== 'guest') {
+    setTimeout(function () {
+      pushProgressNow(user).then(function (saved) {
+        if (saved) return;
+        setTimeout(function () { pushProgressNow(user); }, 2500);
+      });
+    }, 2200);
   }
 
   // Витягує прогрес із сервера і мерджить у localStorage. Викликається:
