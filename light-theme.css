@@ -1,0 +1,105 @@
+/* Light theme contrast layer. Dark theme remains unchanged. */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #e5e8ed;
+  --bg-deep: #d9dde4;
+  --scene-a: #dfe3e9;
+  --scene-b: #f0f2f5;
+  --glass-1: rgba(22, 26, 34, 0.06);
+  --glass-2: rgba(22, 26, 34, 0.09);
+  --glass-3: rgba(22, 26, 34, 0.13);
+  --glass-border: rgba(22, 26, 34, 0.15);
+  --glass-border-strong: rgba(22, 26, 34, 0.24);
+  --glass-specular: rgba(255, 255, 255, 0.72);
+  --surface-opaque: #f1f3f6;
+  --ink: #202630;
+  --ink-dim: #4b5563;
+  --ink-faint: #667085;
+}
+
+:root[data-theme="light"] body {
+  background: linear-gradient(180deg, #dfe3e9 0%, #eef0f3 55%, #e8ecf1 100%);
+}
+
+:root[data-theme="light"] .sidebar {
+  background: rgba(245, 247, 250, 0.9);
+  border-color: rgba(31, 41, 55, 0.16);
+  box-shadow: 10px 0 30px rgba(31, 41, 55, 0.08);
+}
+
+:root[data-theme="light"] .sidebar__progress,
+:root[data-theme="light"] .sidebar__search-wrap,
+:root[data-theme="light"] .sidebar__tabs,
+:root[data-theme="light"] .sidebar__tool,
+:root[data-theme="light"] .sidebar__tools {
+  background: rgba(220, 225, 232, 0.72);
+  border-color: rgba(31, 41, 55, 0.14);
+}
+
+:root[data-theme="light"] .sidebar__search-input {
+  color: var(--ink);
+}
+
+:root[data-theme="light"] .sidebar__search-input::placeholder {
+  color: #788496;
+}
+
+:root[data-theme="light"] .chapter-card,
+:root[data-theme="light"] .summary,
+:root[data-theme="light"] .email,
+:root[data-theme="light"] .tbl-wrap,
+:root[data-theme="light"] .modal__card,
+:root[data-theme="light"] .password-change-card {
+  background: rgba(247, 248, 250, 0.9);
+  border-color: rgba(31, 41, 55, 0.16);
+  box-shadow: 0 12px 30px rgba(31, 41, 55, 0.1);
+}
+
+:root[data-theme="light"] .chapter-card:hover {
+  background: #fbfcfd;
+  border-color: rgba(31, 41, 55, 0.22);
+}
+
+:root[data-theme="light"] .chapter-card__desc,
+:root[data-theme="light"] .chapter-card__stat,
+:root[data-theme="light"] .overview-head__sub,
+:root[data-theme="light"] .modal__desc,
+:root[data-theme="light"] .form-group label {
+  color: #596579;
+}
+
+:root[data-theme="light"] .form-group input,
+:root[data-theme="light"] .form-group textarea,
+:root[data-theme="light"] .form-group select {
+  background: #f8fafc;
+  border-color: rgba(31, 41, 55, 0.2);
+  color: var(--ink);
+}
+
+:root[data-theme="light"] .form-group input::placeholder,
+:root[data-theme="light"] .form-group textarea::placeholder {
+  color: #7b8797;
+}
+
+:root[data-theme="light"] .overview-tabs {
+  background: rgba(31, 41, 55, 0.08);
+  border-color: rgba(31, 41, 55, 0.15);
+}
+
+:root[data-theme="light"] .overview-tab.active {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(31, 41, 55, 0.18);
+  box-shadow: 0 3px 10px rgba(31, 41, 55, 0.1);
+}
+
+:root[data-theme="light"] .modal__close,
+:root[data-theme="light"] .sidebar__tool:hover {
+  background: rgba(31, 41, 55, 0.1);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="light"] * {
+    transition-duration: 0.01ms !important;
+  }
+}
