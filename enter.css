@@ -10,7 +10,7 @@
   position: absolute;
   inset: -18px;
   z-index: -1;
-  background: url('photo/onboard-1.jpg') center / cover no-repeat;
-  filter: blur(12px) saturate(0.82) brightness(0.62);
+  background: url('photo/LB.png') center / cover no-repeat;
+  filter: blur(14px) saturate(1.08) sepia(0.1) brightness(0.64);
   transform: scale(1.04);
 }
