@@ -1,0 +1,19 @@
+/* Focus treatment for the flash-card overlay. */
+.flash-card__title::before {
+  content: none;
+  margin-right: 0;
+}
+
+body.flash-panel-open .sidebar {
+  filter: blur(8px);
+  opacity: .38;
+  pointer-events: none;
+  transition: filter .24s ease, opacity .24s ease;
+  will-change: filter, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.flash-panel-open .sidebar {
+    transition: none;
+  }
+}

@@ -1582,6 +1582,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   window.openFlashPanel = function () {
     var ov = document.getElementById('flashOverlay');
     if (!ov) return;
+    document.body.classList.add('flash-panel-open');
     flashDue = flashDueList();
     if (flashDue.length === 0) {
       ov.classList.add('active');
@@ -1603,6 +1604,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   window.closeFlashPanel = function () {
     var ov = document.getElementById('flashOverlay');
     if (ov) ov.classList.remove('active');
+    document.body.classList.remove('flash-panel-open');
   };
   function flashShow() {
     var idx = flashDue[flashIndex];
