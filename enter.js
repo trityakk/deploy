@@ -78,6 +78,11 @@
       return waitForRecoverySession();
     }).then(function (session) {
       setActivationReady(!!session);
+      if (session) {
+        // Recovery tokens are credentials. Remove them from the address bar
+        // before the user types a new password or leaves the page.
+        window.history.replaceState(null, document.title, new URL('enter.html', window.location.href).href);
+      }
       if (!session && error) {
         var params = new URLSearchParams(window.location.search);
         var reason = params.get('error_description') || params.get('error');

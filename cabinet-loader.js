@@ -54,6 +54,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
       var access = await window.startAmazonSupabase.rpc('has_active_course_access');
       if (access.error) throw access.error;
       if (access.data === true) {
+        localStorage.setItem('sa_user', session.user.email.toLowerCase());
         var content = await window.startAmazonSupabase.storage
           .from('course-content')
           .download('cabinet-content.html');

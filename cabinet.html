@@ -18,12 +18,12 @@
         <p class="modal__desc">Введіть логін та пароль, які ви отримали після оплати</p>
         <form class="login-form" onsubmit="return doLogin(event)">
             <div class="form-group">
-                <label>Email</label>
+                <label for="cabinetLoginInput">Email</label>
                 <input type="email" id="cabinetLoginInput" placeholder="you@example.com" autocomplete="username" required>
                 <small style="display:block;margin-top:6px;color:rgba(255,255,255,.55);font-size:12px;line-height:1.4">Введіть email, який ви вказали під час оплати.</small>
             </div>
             <div class="form-group">
-                <label>Пароль</label>
+                <label for="cabinetPassInput">Пароль</label>
                 <input type="password" id="cabinetPassInput" placeholder="••••••••" autocomplete="current-password" required>
             </div>
             <button type="submit" class="login-submit">Увійти</button>

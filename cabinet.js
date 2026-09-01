@@ -39,6 +39,24 @@
 
   var user = loadProgress('sa_user', 'guest') || 'guest';
 
+  function clearLocalAccountCache() {
+    var keys = [
+      'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
+      'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak',
+      'sa_theme', 'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab',
+      'sa_sidebar_open_mobile', 'sa_display_name'
+    ];
+    keys.forEach(function (key) { localStorage.removeItem(key); });
+    try {
+      var dynamic = [];
+      for (var i = 0; i < localStorage.length; i += 1) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf('hw_marked_') === 0) dynamic.push(key);
+      }
+      dynamic.forEach(function (key) { localStorage.removeItem(key); });
+    } catch (e) {}
+  }
+
   // Раз на сесію вкладки підтягуємо прогрес із сервера — якщо на іншому
   // пристрої щось змінилось, тут воно з'явиться після одного reload.
   // sessionStorage-прапорець рятує від зациклення (він переживає
@@ -166,6 +184,7 @@
       }
       var sessionEmail = session.user.email.toLowerCase();
       if (localStorage.getItem('sa_user') !== sessionEmail) {
+        clearLocalAccountCache();
         localStorage.setItem('sa_user', sessionEmail);
       }
     });
@@ -853,6 +872,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
 
   window.doLogout = function () {
     if (window.startAmazonSupabase) window.startAmazonSupabase.auth.signOut();
+    clearLocalAccountCache();
     localStorage.removeItem('sa_user');
     localStorage.removeItem('sa_token');
     localStorage.removeItem('sa_display_name');
@@ -864,9 +884,14 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   // авторизованого користувача. Тому він не прив'язаний до одного браузера.
   var SYNC_KEYS = [
     'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
-    'sa_homework', 'sa_exam_passed', 'sa_streak', 'sa_theme',
-    'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab', 'sa_display_name'
+    'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak', 'sa_theme',
+    'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab', 'sa_sidebar_open_mobile',
+    'sa_display_name'
   ];
+
+  function isSyncKey(key) {
+    return SYNC_KEYS.indexOf(key) !== -1 || String(key).indexOf('hw_marked_') === 0;
+  }
 
   function backendReady() {
     return !!window.startAmazonSupabase;
@@ -879,7 +904,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
 
   var pushTimer = null;
   function schedulePushProgress(key) {
-    if (!backendReady() || SYNC_KEYS.indexOf(key) === -1) return;
+    if (!backendReady() || !isSyncKey(key)) return;
     var email = currentUserEmail();
     if (!email) return;
     clearTimeout(pushTimer);
@@ -891,10 +916,12 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
 
   function pushProgressNow(email) {
     var snapshot = {};
-    SYNC_KEYS.forEach(function (k) {
+    for (var i = 0; i < localStorage.length; i += 1) {
+      var k = localStorage.key(i);
+      if (!isSyncKey(k)) continue;
       var v = localStorage.getItem(k);
       if (v !== null) snapshot[k] = v;
-    });
+    }
     return window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
       if (!session || !session.user) return;
@@ -947,7 +974,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
           var data = typeof serverData === 'string' ? safeJSONParse(serverData, null) : serverData;
           if (data && typeof data === 'object') {
             Object.keys(data).forEach(function (k) {
-              if (SYNC_KEYS.indexOf(k) === -1) return;
+              if (!isSyncKey(k)) return;
               if (localStorage.getItem(k) !== data[k]) {
                 localStorage.setItem(k, data[k]);
                 changed = true;
@@ -2248,7 +2275,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       }
       toRemove.forEach(function (k) { localStorage.removeItem(k); });
     } catch (e) {}
-    window.location.reload();
+    pushProgressNow(user).finally(function () { window.location.reload(); });
   };
 
   updateExamUI();

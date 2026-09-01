@@ -20,6 +20,8 @@ create table if not exists public.orders (
   merchant_account text,
   raw_payload jsonb,
   paid_at timestamptz,
+  temporary_password_created_at timestamptz,
+  access_email_sent_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
