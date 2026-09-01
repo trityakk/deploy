@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Навчальна платформа — Кабінет</title>
-<link rel="stylesheet" href="styles-glass.css?v=152">
+<link rel="stylesheet" href="styles-glass.css?v=153">
 <link rel="stylesheet" href="cabinet-guest.css?v=1">
 <link rel="icon" type="image/svg+xml" href="photo/favicon.svg">
 </head>
@@ -52,7 +52,7 @@
 </button>
 </div>
 <div class="sidebar__user">
-<div class="sidebar__avatar" id="sidebarAvatar"><img id="avatarImg" src="" alt="Avatar"></div>
+<button class="sidebar__avatar" id="sidebarAvatar" onclick="toggleAccountMenu(event);return false" data-tip="Налаштування профілю" aria-label="Налаштування профілю" aria-expanded="false"><img id="avatarImg" src="" alt="Avatar"></button>
 <div class="sidebar__name-wrap"><div class="sidebar__name" id="sidebarName" spellcheck="false">Користувач</div>
 <button class="sidebar__name-edit sidebar__account-trigger" id="sidebarAccountTrigger" onclick="toggleAccountMenu(event);return false" data-tip="Налаштування профілю" aria-label="Налаштування профілю" aria-expanded="false">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-2.5V20a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1A1.7 1.7 0 0 0 8 15a1.7 1.7 0 0 0-1.6-1H6v-2.5h.4A1.7 1.7 0 0 0 8 10a1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.2h2.5V5a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2V13h-.2a1.7 1.7 0 0 0-1.6 2Z"/></svg>
@@ -199,6 +199,6 @@
 <main class="cabinet__main">
 <div id="cabinetContent"></div>
 </main>
-<script src="cabinet-loader.js?v=11"></script>
+<script src="cabinet-loader.js?v=12"></script>
 </body>
 </html>

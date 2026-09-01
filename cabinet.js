@@ -54,7 +54,7 @@
 
   var loginModal = document.getElementById('cabinetLoginModal');
   var accountMenu = document.getElementById('sidebarAccountMenu');
-  var accountTrigger = document.getElementById('sidebarAccountTrigger');
+  var accountTrigger = document.getElementById('sidebarAvatar');
   window.toggleAccountMenu = function (event) {
     if (event) event.stopPropagation();
     if (!accountMenu) return;
@@ -997,7 +997,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     openBtn.addEventListener('mouseenter', function (e) { showTip(openBtn, 'Відкрити бічну панель', e); });
     openBtn.addEventListener('mouseleave', hideTip);
   }
-  document.querySelectorAll('.sidebar__logout, .sidebar__name-edit, .sidebar__progress, .sidebar__tool').forEach(function (b) {
+  document.querySelectorAll('.sidebar__logout, .sidebar__name-edit, .sidebar__avatar, .sidebar__progress, .sidebar__tool').forEach(function (b) {
     bindTip(b, b.getAttribute('data-tip') || b.getAttribute('title') || '');
   });
 
@@ -2312,6 +2312,12 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       sel: '.sidebar__logo',
       title: 'Картки розділів',
       text: 'Щоб повернутися до зручних карток розділів, натисни на лого «Навчальна платформа» зверху сайдбара.',
+      placement: 'right'
+    },
+    {
+      sel: '#sidebarAvatar',
+      title: 'Профіль',
+      text: 'Натисни на аватар — тут можна змінити ім’я та пароль.',
       placement: 'right'
     },
     {
