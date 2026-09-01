@@ -1660,7 +1660,7 @@ function animateCounter(el, target, duration){
       currentX += (targetX - currentX) * .16;
       currentY += (targetY - currentY) * .16;
       pop += (popTarget - pop) * .11;
-      card.style.transform = 'perspective(750px) rotateX(' + (-currentY * 17 * pop).toFixed(2) + 'deg) rotateY(' + (currentX * 17 * pop).toFixed(2) + 'deg) translate3d(' + (currentX * 10 * pop).toFixed(1) + 'px,' + ((currentY * 8 - 3) * pop).toFixed(1) + 'px,0) scale(' + (1 + .035 * pop).toFixed(4) + ')';
+      card.style.transform = 'perspective(750px) rotateX(' + (-currentY * 23 * pop).toFixed(2) + 'deg) rotateY(' + (currentX * 23 * pop).toFixed(2) + 'deg) translate3d(' + (currentX * 13 * pop).toFixed(1) + 'px,' + ((currentY * 10 - 4) * pop).toFixed(1) + 'px,0) scale(' + (1 + .06 * pop).toFixed(4) + ')';
       if (active || Math.abs(targetX - currentX) > .01 || Math.abs(targetY - currentY) > .01 || Math.abs(popTarget - pop) > .01) raf = requestAnimationFrame(render);
       else { raf = 0; card.style.transition = ''; }
     }
