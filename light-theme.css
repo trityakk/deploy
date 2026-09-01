@@ -44,6 +44,10 @@
   color: #788496;
 }
 
+:root[data-theme="light"] .sidebar__progress-count {
+  color: #334155;
+}
+
 :root[data-theme="light"] .chapter-card,
 :root[data-theme="light"] .summary,
 :root[data-theme="light"] .email,
