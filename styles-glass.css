@@ -975,8 +975,8 @@ body.tour-locked{overflow:hidden}
   background:transparent;color:var(--ink-faint);
   cursor:pointer;transition:background .2s var(--ease), color .2s var(--ease);
 }
-.sidebar__account-trigger{width:44px;height:44px;border-radius:11px;background:transparent}
-.sidebar__account-trigger svg{width:32px;height:32px;stroke-width:2.1;transform:scale(1.12)}
+.sidebar__account-trigger{width:32px;height:32px;border-radius:6px;background:transparent}
+.sidebar__account-trigger svg{width:14px;height:14px;stroke-width:2;transform:none}
 .sidebar__account-trigger:hover{background:transparent;color:var(--ink)}
 .sidebar__name-edit svg{width:13px;height:13px}
 .sidebar__name-edit:hover{background:rgba(255,255,255,0.07);color:var(--ink)}
