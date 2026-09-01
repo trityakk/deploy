@@ -31,6 +31,10 @@ body.flash-panel-open .sidebar {
   z-index: 1;
 }
 
+#cabinetLoginModal .modal__footer {
+  opacity: .52;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body.flash-panel-open .sidebar {
     transition: none;
