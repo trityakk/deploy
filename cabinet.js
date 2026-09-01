@@ -1614,6 +1614,10 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   ];
 
   var flashState = loadProgress('sa_flashcards', {});
+  if (flashState.deckVersion !== 2) {
+    flashState = { cards: {}, reviewed: {}, deckVersion: 2 };
+    saveProgress('sa_flashcards', flashState);
+  }
   if (!flashState.cards) flashState.cards = {};
   if (!flashState.reviewed) flashState.reviewed = {};
   var flashIndex = 0;
