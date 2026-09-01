@@ -61,6 +61,10 @@ drop policy if exists "profile owner can update" on public.profiles;
 create policy "profile owner can update" on public.profiles
   for update using (auth.uid() = id) with check (auth.uid() = id);
 
+drop policy if exists "profile owner can insert" on public.profiles;
+create policy "profile owner can insert" on public.profiles
+  for insert with check (auth.uid() = id);
+
 drop policy if exists "user can read own entitlement" on public.entitlements;
 create policy "user can read own entitlement" on public.entitlements
   for select using (lower(email) = lower(coalesce(auth.jwt() ->> 'email', '')));
