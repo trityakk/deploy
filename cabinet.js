@@ -275,6 +275,11 @@
     if (!cleanValue) cleanValue = user;
     displayName = cleanValue;
     saveProgress('sa_display_name', cleanValue === user ? '' : cleanValue);
+    // Имя должно переживать закрытие вкладки сразу после редактирования,
+    // поэтому не полагаемся только на debounce-синхронизацию прогресса.
+    if (window.startAmazonSupabase && user !== 'guest') {
+      setTimeout(function () { pushProgressNow(user); }, 0);
+    }
     if (!window.startAmazonSupabase || user === 'guest') return;
     window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
@@ -2499,6 +2504,11 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     if (ov) ov.classList.remove('active');
     document.body.classList.remove('tour-locked');
     saveProgress('sa_tour_seen', '1');
+    // Туториал не должен появляться снова, если пользователь сразу
+    // обновил страницу после закрытия.
+    if (user !== 'guest') {
+      setTimeout(function () { pushProgressNow(user); }, 0);
+    }
   };
 
   window.nextTour = function () {
