@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Навчальна платформа — Кабінет</title>
-<link rel="stylesheet" href="styles-glass.css?v=154">
+<link rel="stylesheet" href="styles-glass.css?v=155">
 <link rel="stylesheet" href="cabinet-guest.css?v=1">
 <link rel="icon" type="image/svg+xml" href="photo/favicon.svg">
 </head>
@@ -12,9 +12,9 @@
 
 <div class="modal" id="cabinetLoginModal">
     <div class="modal__overlay"></div>
-    <div class="modal__card">
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="cabinetLoginTitle">
         <div class="modal__logo">Навчальна <b>платформа</b></div>
-        <h2 class="modal__title">Увійти до кабінету</h2>
+        <h2 class="modal__title" id="cabinetLoginTitle">Увійти до кабінету</h2>
         <p class="modal__desc">Введіть логін та пароль, які ви отримали після оплати</p>
         <form class="login-form" onsubmit="return doLogin(event)">
             <div class="form-group">
@@ -98,12 +98,12 @@
 </button>
 <div class="sidebar__search-results" id="searchResults"></div>
 </div>
-<div class="sidebar__bookmarks-link" id="bookmarksLink" onclick="showBookmarksPanel()" style="display:none">
+<div class="sidebar__bookmarks-link" id="bookmarksLink" onclick="showBookmarksPanel()" role="button" tabindex="0" aria-label="Мої закладки" style="display:none">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
 <span>Мої закладки</span>
 <span class="sidebar__bookmarks-count" id="bookmarksCount">0</span>
 </div>
-<button class="continue-reading" id="continueReadingBtn" onclick="continueReading()" style="display:none">
+<button type="button" class="continue-reading" id="continueReadingBtn" onclick="continueReading()" style="display:none">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
 <span>Продовжити читання</span>
 <span class="continue-reading__chapter" id="continueReadingName"></span>
@@ -199,6 +199,6 @@
 <main class="cabinet__main">
 <div id="cabinetContent"></div>
 </main>
-<script src="cabinet-loader.js?v=16"></script>
+<script src="cabinet-loader.js?v=17"></script>
 </body>
 </html>

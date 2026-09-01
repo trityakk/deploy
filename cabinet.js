@@ -347,6 +347,14 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   var totalChapters = 0;
   var currentChapter = null;
   var bookmarks = loadProgress('sa_bookmarks', []);
+  var bookmarksLink = document.getElementById('bookmarksLink');
+  if (bookmarksLink) {
+    bookmarksLink.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      showBookmarksPanel();
+    });
+  }
 
   // ─── Streak: дні навчання поспіль ───
   function todayStr() {
