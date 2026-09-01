@@ -276,11 +276,15 @@
       if (!session || !session.user) return;
       return window.startAmazonSupabase.from('profiles').upsert({
         id: session.user.id,
-        email: user,
+        email: session.user.email.toLowerCase(),
         display_name: cleanValue === user ? null : cleanValue,
         updated_at: new Date().toISOString()
-      }, { onConflict: 'id' });
-    }).catch(function () {});
+      }, { onConflict: 'id' }).then(function (result) {
+        if (result.error) throw result.error;
+      });
+    }).catch(function (error) {
+      console.warn('Не вдалося зберегти ім’я профілю:', error);
+    });
   }
 
   nameEl.addEventListener('click', function () {
