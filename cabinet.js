@@ -9,6 +9,15 @@
     }
   }
 
+  // Ключи синхронизации должны быть объявлены до первого вызова
+  // saveProgress: старт кабинета сохраняет streak и активную вкладку сразу.
+  var SYNC_KEYS = [
+    'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
+    'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak', 'sa_theme',
+    'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab', 'sa_sidebar_open_mobile',
+    'sa_display_name'
+  ];
+
   // Тонка обгортка над localStorage. localStorage лишається миттєвим
   // локальним кешем (UI читає саме з нього), а Supabase — джерело правди
   // між пристроями.
@@ -930,13 +939,6 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   // ─── Синхронізація прогресу через Supabase ───
   // Email визначає доступ до курсу, а прогрес зберігається за UUID
   // авторизованого користувача. Тому він не прив'язаний до одного браузера.
-  var SYNC_KEYS = [
-    'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
-    'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak', 'sa_theme',
-    'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab', 'sa_sidebar_open_mobile',
-    'sa_display_name'
-  ];
-
   function isSyncKey(key) {
     return SYNC_KEYS.indexOf(key) !== -1 || String(key).indexOf('hw_marked_') === 0;
   }
