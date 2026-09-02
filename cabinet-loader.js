@@ -34,6 +34,29 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
     var previous = String(localStorage.getItem('sa_user') || '').toLowerCase();
     if (previous && next && previous !== next) clearLocalAccountState();
     localStorage.setItem('sa_user', next);
+    restoreAccountCache(next);
+  }
+
+  function restoreAccountCache(email) {
+    var prefix = 'sa_account_cache::' + encodeURIComponent(String(email || '').toLowerCase()) + '::';
+    var allowed = [
+      'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
+      'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak',
+      'sa_theme', 'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab',
+      'sa_sidebar_open_mobile', 'sa_display_name'
+    ];
+    try {
+      for (var i = 0; i < localStorage.length; i += 1) {
+        var key = localStorage.key(i);
+        if (!key || key.indexOf(prefix) !== 0) continue;
+        var originalKey = key.slice(prefix.length);
+        if (allowed.indexOf(originalKey) === -1 && originalKey.indexOf('hw_marked_') !== 0) continue;
+        var value = localStorage.getItem(key);
+        if (value !== null) localStorage.setItem(originalKey, value);
+      }
+    } catch (e) {
+      console.warn('Не вдалося відновити локальну копію акаунта:', e);
+    }
   }
 
   function loadScript(src) {
@@ -140,7 +163,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
         localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
         if (loginModal) loginModal.style.display = 'none';
-        await loadScript('cabinet.js?v=77');
+        await loadScript('cabinet.js?v=78');
       } catch (error) {
         if (errorEl) {
           errorEl.style.display = 'block';
@@ -182,7 +205,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
 
   // Load the application after the protected body (or guest state) is ready.
   try {
-    await loadScript('cabinet.js?v=77');
+    await loadScript('cabinet.js?v=78');
   } catch (error) {
     document.body.classList.add('cabinet-load-error');
     console.error('Не вдалося запустити кабінет.', error);

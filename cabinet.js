@@ -17,11 +17,22 @@
   // варто синхронізувати.
   function saveProgress(key, value) {
     try {
-      localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+      var serialized = typeof value === 'string' ? value : JSON.stringify(value);
+      localStorage.setItem(key, serialized);
+      // Отдельная копия по email переживает logout/login и страхует от
+      // краткого сбоя Supabase. Серверная запись всё равно остаётся главным
+      // источником данных при следующем входе.
+      if (user && user !== 'guest') {
+        localStorage.setItem(accountCachePrefix(user) + key, serialized);
+      }
       schedulePushProgress(key);
     } catch (e) {
       console.warn('Не вдалося зберегти прогрес (' + key + '):', e);
     }
+  }
+
+  function accountCachePrefix(email) {
+    return 'sa_account_cache::' + encodeURIComponent(String(email || '').toLowerCase()) + '::';
   }
 
   function loadProgress(key, fallback) {
@@ -161,7 +172,7 @@
 
     // Не довіряємо localStorage як доказу входу: він легко редагується через
     // DevTools. Справжнім джерелом авторизації є Supabase session.
-    window.startAmazonSupabase.auth.getSession().then(function (result) {
+  window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
       if (!session || !session.user || !session.user.email) {
         // Не стираем локальный кеш на кратком auth-loading: Supabase может
@@ -174,6 +185,7 @@
         clearLocalAccountCache();
         localStorage.setItem('sa_user', sessionEmail);
       }
+      restoreAccountCache(sessionEmail);
       // Синхронизация запускается только после подтверждения сессии. Раньше
       // она стартовала параллельно с getSession() и иногда затирала свежие
       // локальные данные результатом незавершённого запроса.
@@ -928,6 +940,25 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   function currentUserEmail() {
     var u = loadProgress('sa_user', 'guest');
     return (u && u !== 'guest') ? u : null;
+  }
+
+  function restoreAccountCache(email) {
+    if (!email) return;
+    var prefix = accountCachePrefix(email);
+    try {
+      for (var i = 0; i < localStorage.length; i += 1) {
+        var key = localStorage.key(i);
+        if (!key || key.indexOf(prefix) !== 0) continue;
+        var originalKey = key.slice(prefix.length);
+        if (!isSyncKey(originalKey)) continue;
+        var value = localStorage.getItem(key);
+        if (value !== null && localStorage.getItem(originalKey) !== value) {
+          localStorage.setItem(originalKey, value);
+        }
+      }
+    } catch (e) {
+      console.warn('Не вдалося відновити локальну копію акаунта:', e);
+    }
   }
 
   var pushTimer = null;
