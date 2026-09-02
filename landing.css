@@ -6,3 +6,23 @@
   border-color: transparent !important;
   border-left-color: transparent !important;
 }
+
+/* Comparison rows get the same calm 3D lift as the other landing cards. */
+.compare-table tbody tr {
+  transform-style: preserve-3d;
+  transition: transform .42s cubic-bezier(.22, 1, .36, 1),
+    box-shadow .42s ease, background .32s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .compare-table tbody tr:hover {
+    position: relative;
+    z-index: 1;
+    transform: translateY(-3px) scale(1.012);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .18);
+  }
+
+  .compare-table tbody tr:hover td {
+    background: rgba(240, 180, 41, .055);
+  }
+}
