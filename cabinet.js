@@ -1004,13 +1004,22 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     return window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
       if (!session || !session.user) return;
-      return window.startAmazonSupabase.from('course_progress').upsert({
+      var tableWrite = window.startAmazonSupabase.from('course_progress').upsert({
         user_id: session.user.id,
         data: snapshot,
         updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' });
-    }).then(function (result) {
-      if (result && result.error) throw result.error;
+      }, { onConflict: 'user_id' }).then(function (result) {
+        if (result && result.error) throw result.error;
+      });
+      // Дубль у Auth metadata працює між браузерами навіть якщо таблиця
+      // course_progress має старі або неповні RLS-політики.
+      var metadata = Object.assign({}, session.user.user_metadata || {}, {
+        display_name: displayName || undefined,
+        course_progress: snapshot
+      });
+      var authWrite = window.startAmazonSupabase.auth.updateUser({ data: metadata });
+      return Promise.all([tableWrite, authWrite]);
+    }).then(function () {
       return true;
     }).catch(function (error) {
       console.warn('Не вдалося синхронізувати прогрес, буде повтор:', error);
@@ -1044,12 +1053,22 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
           .from('course_progress')
           .select('data')
           .eq('user_id', session.user.id)
-          .maybeSingle();
+          .maybeSingle()
+          .then(function (progressResult) {
+            return {
+              data: progressResult.data,
+              error: progressResult.error,
+              metadata: session.user.user_metadata || {}
+            };
+          });
       })
       .then(function (result) {
         var changed = false;
         if (result && result.error) throw result.error;
         var serverData = result && result.data && result.data.data;
+        if (!serverData || (typeof serverData === 'object' && Object.keys(serverData).length === 0)) {
+          serverData = result && result.metadata && result.metadata.course_progress;
+        }
         var serverObject = serverData && typeof serverData === 'object'
           ? serverData
           : (typeof serverData === 'string' ? safeJSONParse(serverData, {}) : {});
