@@ -1033,7 +1033,15 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
         course_progress: snapshot
       });
       var authWrite = window.startAmazonSupabase.auth.updateUser({ data: metadata }).then(function (result) {
-        if (result && result.error) throw result.error;
+        // Старі проєкти можуть мати таблицю без GRANT для authenticated.
+        // Прогрес також зберігається в Auth metadata, тому помилка таблиці
+        // не повинна блокувати відновлення даних між браузерами.
+        if (result && result.error) {
+          console.warn('Не вдалося прочитати course_progress, використано профіль:', JSON.stringify({
+            message: result.error.message, code: result.error.code,
+            details: result.error.details, hint: result.error.hint
+          }));
+        }
         return true;
       });
       return Promise.all([tableWrite, authWrite]);
