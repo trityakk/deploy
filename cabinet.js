@@ -299,8 +299,13 @@
         updated_at: new Date().toISOString()
       }, { onConflict: 'id' }).then(function (result) {
         if (result.error) throw result.error;
+        // Не перезаписываем metadata только именем: иначе Auth может удалить
+        // сохранённый course_progress при следующем входе в другом браузере.
         return window.startAmazonSupabase.auth.updateUser({
-          data: { display_name: cleanValue === user ? null : cleanValue }
+          data: Object.assign({}, session.user.user_metadata || {}, {
+            display_name: cleanValue === user ? null : cleanValue,
+            course_progress: buildProgressSnapshot()
+          })
         });
       });
     }).catch(function (error) {
