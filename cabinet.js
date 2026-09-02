@@ -49,7 +49,7 @@
       var raw = localStorage.getItem(key);
       if (raw === null) return fallback;
       // theme/last_chapter/user зберігаються як прості рядки, інше — як JSON
-      if (key === 'sa_theme' || key === 'sa_last_chapter' || key === 'sa_user' || key === 'sa_display_name') return raw;
+      if (key === 'sa_theme' || key === 'sa_last_chapter' || key === 'sa_user' || key === 'sa_display_name' || key === 'sa_active_tab') return raw;
       return safeJSONParse(raw, fallback);
     } catch (e) {
       console.warn('Не вдалося завантажити прогрес (' + key + '):', e);
@@ -1006,7 +1006,9 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     pushTimer = setTimeout(function () { pushProgressNow(email); }, 500);
   }
 
+  var progressWriteChain = Promise.resolve();
   function pushProgressNow(email) {
+    progressWriteChain = progressWriteChain.then(function () {
     var snapshot = buildProgressSnapshot();
     return window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
@@ -1016,7 +1018,13 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
         data: snapshot,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id' }).then(function (result) {
-        if (result && result.error) throw result.error;
+        if (result && result.error) {
+          console.warn('Не вдалося записати прогрес у course_progress:', JSON.stringify({
+            message: result.error.message, code: result.error.code,
+            details: result.error.details, hint: result.error.hint
+          }));
+        }
+        return !(result && result.error);
       });
       // Дубль у Auth metadata працює між браузерами навіть якщо таблиця
       // course_progress має старі або неповні RLS-політики.
@@ -1024,14 +1032,23 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
         display_name: displayName || undefined,
         course_progress: snapshot
       });
-      var authWrite = window.startAmazonSupabase.auth.updateUser({ data: metadata });
+      var authWrite = window.startAmazonSupabase.auth.updateUser({ data: metadata }).then(function (result) {
+        if (result && result.error) throw result.error;
+        return true;
+      });
       return Promise.all([tableWrite, authWrite]);
     }).then(function () {
       return true;
     }).catch(function (error) {
-      console.warn('Не вдалося синхронізувати прогрес, буде повтор:', error);
+      console.warn('Не вдалося синхронізувати прогрес, буде повтор:', JSON.stringify({
+        message: error && error.message, code: error && error.code,
+        details: error && error.details, hint: error && error.hint,
+        status: error && error.status
+      }));
       return false;
     });
+    });
+    return progressWriteChain;
   }
 
   // Після першого входу гарантовано створюємо серверний запис навіть якщо
