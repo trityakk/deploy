@@ -911,6 +911,9 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   });
 
   window.doLogout = function () {
+    // Перед logout принудительно фиксируем всё текущее состояние аккаунта.
+    // Это не зависит от debounce, pagehide или скорости сети.
+    persistAccountCacheNow(user);
     if (window.startAmazonSupabase) window.startAmazonSupabase.auth.signOut();
     clearLocalAccountCache();
     localStorage.removeItem('sa_user');
@@ -971,6 +974,19 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       if (v !== null) snapshot[k] = v;
     }
     return snapshot;
+  }
+
+  function persistAccountCacheNow(email) {
+    if (!email || email === 'guest') return;
+    var snapshot = buildProgressSnapshot();
+    var prefix = accountCachePrefix(email);
+    try {
+      Object.keys(snapshot).forEach(function (key) {
+        localStorage.setItem(prefix + key, snapshot[key]);
+      });
+    } catch (e) {
+      console.warn('Не вдалося зафіксувати локальну копію акаунта:', e);
+    }
   }
   function schedulePushProgress(key) {
     if (!backendReady() || !isSyncKey(key)) return;
