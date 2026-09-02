@@ -57,16 +57,6 @@
     } catch (e) {}
   }
 
-  // При кожному відкритті підтягуємо прогрес із сервера. Це важливо після
-  // першого входу: sessionStorage міг залишити прапорець навіть тоді, коли
-  // попередній запит не завершився або був перерваний.
-  (function syncOnEntry() {
-    if (user === 'guest') return;
-    pullProgressFromServer(user, function (changed) {
-      if (changed) location.reload();
-    });
-  })();
-
   var loginModal = document.getElementById('cabinetLoginModal');
   var accountMenu = document.getElementById('sidebarAccountMenu');
   var accountTrigger = document.getElementById('sidebarAvatar');
@@ -174,8 +164,8 @@
     window.startAmazonSupabase.auth.getSession().then(function (result) {
       var session = result && result.data && result.data.session;
       if (!session || !session.user || !session.user.email) {
-        localStorage.removeItem('sa_user');
-        localStorage.removeItem('sa_display_name');
+        // Не стираем локальный кеш на кратком auth-loading: Supabase может
+        // вернуть null до восстановления сохранённой сессии.
         if (loginModal) loginModal.style.display = 'flex';
         return;
       }
@@ -184,6 +174,12 @@
         clearLocalAccountCache();
         localStorage.setItem('sa_user', sessionEmail);
       }
+      // Синхронизация запускается только после подтверждения сессии. Раньше
+      // она стартовала параллельно с getSession() и иногда затирала свежие
+      // локальные данные результатом незавершённого запроса.
+      pullProgressFromServer(sessionEmail, function (changed) {
+        if (changed) location.reload();
+      });
     });
   }
 
@@ -344,7 +340,9 @@
         nameEl.textContent = serverName;
         saveProgress('sa_display_name', serverName);
       }
-    }).catch(function () {});
+    }).catch(function (error) {
+      console.warn('Не вдалося завантажити ім’я профілю:', error);
+    });
   }
   var avatarNum = Math.floor(Math.random() * 3) + 1;
 document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg';
