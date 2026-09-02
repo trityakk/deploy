@@ -1065,13 +1065,17 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
       .then(function (result) {
         var changed = false;
         if (result && result.error) throw result.error;
-        var serverData = result && result.data && result.data.data;
-        if (!serverData || (typeof serverData === 'object' && Object.keys(serverData).length === 0)) {
-          serverData = result && result.metadata && result.metadata.course_progress;
-        }
-        var serverObject = serverData && typeof serverData === 'object'
-          ? serverData
-          : (typeof serverData === 'string' ? safeJSONParse(serverData, {}) : {});
+        var tableData = result && result.data && result.data.data;
+        var tableObject = tableData && typeof tableData === 'object'
+          ? tableData
+          : (typeof tableData === 'string' ? safeJSONParse(tableData, {}) : {});
+        var metadataData = result && result.metadata && result.metadata.course_progress;
+        var metadataObject = metadataData && typeof metadataData === 'object'
+          ? metadataData
+          : (typeof metadataData === 'string' ? safeJSONParse(metadataData, {}) : {});
+        // Auth metadata is written together with every progress update and is
+        // authoritative for keys that may be missing in an older DB row.
+        var serverObject = Object.assign({}, tableObject, metadataObject);
         if (Object.keys(serverObject).length > 0) {
           Object.keys(serverObject).forEach(function (k) {
               if (!isSyncKey(k)) return;
