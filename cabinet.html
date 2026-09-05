@@ -2,6 +2,8 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<script src="auth-route.js?v=1"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Навчальна платформа — Кабінет</title>
 <link rel="stylesheet" href="styles-glass.css?v=155">
@@ -27,6 +29,7 @@
             <div class="form-group">
                 <label for="cabinetPassInput">Пароль</label>
                 <input type="password" id="cabinetPassInput" placeholder="••••••••" autocomplete="current-password" required>
+                <button type="button" data-password-target="cabinetPassInput" aria-pressed="false">Показати</button>
             </div>
             <button type="submit" class="login-submit">Увійти</button>
             <button type="button" class="login-recovery" id="cabinetRecoveryBtn">Надіслати нове посилання</button>
@@ -77,10 +80,10 @@
     <h2 class="modal__title" id="passwordChangeTitle">Змінити пароль</h2>
     <p class="modal__desc">Придумай новий пароль для входу в особистий кабінет.</p>
     <form id="passwordChangeForm" class="login-form">
-      <div class="form-group"><label for="newPassword">Новий пароль</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" required></div>
-      <div class="form-group"><label for="newPasswordAgain">Повтори пароль</label><input id="newPasswordAgain" type="password" minlength="8" autocomplete="new-password" required></div>
+      <div class="form-group"><label for="newPassword">Новий пароль</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" required><button type="button" data-password-target="newPassword" aria-pressed="false">Показати</button></div>
+      <div class="form-group"><label for="newPasswordAgain">Повтори пароль</label><input id="newPasswordAgain" type="password" minlength="8" autocomplete="new-password" required><button type="button" data-password-target="newPasswordAgain" aria-pressed="false">Показати</button></div>
       <button type="submit" class="login-submit">Зберегти пароль</button>
-      <div class="login-error" id="passwordChangeError"></div>
+      <div class="login-error" id="passwordChangeError" role="alert"></div>
       <div class="password-change-success" id="passwordChangeSuccess">Пароль успішно змінено.</div>
     </form>
   </div>
@@ -92,6 +95,7 @@
 </div>
 <div class="sidebar__progress-bar"><div class="sidebar__progress-fill" id="progressFill" style="width:0%"></div></div>
 </div>
+<p id="progressSyncStatus" role="status" aria-live="polite" style="font-size:11px;line-height:1.4;opacity:.7;margin:0 16px 8px">Завантажуємо прогрес…</p>
 <div class="sidebar__search-wrap" id="sidebarSearchWrap">
 <svg class="sidebar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 <input type="text" id="sidebarSearch" class="sidebar__search-input" placeholder="Пошук по курсу..." oninput="searchContent(this.value)" onkeydown="if(event.key==='Escape'){this.value='';searchContent('');this.blur()}">
@@ -201,6 +205,7 @@
 <main class="cabinet__main">
 <div id="cabinetContent"></div>
 </main>
-<script src="cabinet-loader.js?v=27"></script>
+<script src="cabinet-loader.js?v=28"></script>
+<script src="ui-accessibility.js?v=1" defer></script>
 </body>
 </html>

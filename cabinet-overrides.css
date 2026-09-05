@@ -12,6 +12,20 @@ body.flash-panel-open .sidebar {
   will-change: filter, opacity;
 }
 
+/* Explicit password visibility controls, without emoji or extra filled buttons. */
+.login-form [data-password-target] {
+  display: block;
+  margin: 6px 0 0 auto;
+  padding: 5px 0 5px 12px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.login-form [data-password-target]:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
 /* Keep the login screen visually consistent with the activation screen. */
 #cabinetLoginModal .modal__overlay {
   overflow: hidden;
@@ -22,7 +36,7 @@ body.flash-panel-open .sidebar {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('photo/LB.png') center / cover no-repeat;
+  background: url('photo/LB.webp') center / cover no-repeat;
   filter: blur(16px) saturate(1.08) sepia(.08) brightness(.62);
   z-index: 0;
 }

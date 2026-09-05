@@ -10,21 +10,9 @@
 <link rel="stylesheet" href="light-theme.css?v=2">
 <link rel="stylesheet" href="enter.css?v=3">
 <link rel="icon" type="image/svg+xml" href="photo/favicon.svg">
-<script>
-  // Не перебрасываем в кабинет, если пользователь пришёл по ссылке активации
-  // после оплаты и должен сначала создать пароль.
-  var activationQuery = new URLSearchParams(window.location.search);
-  var activationHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-  var isActivationLink = activationQuery.get('mode') === 'activate'
-    || activationQuery.has('code')
-    || activationQuery.get('type') === 'recovery'
-    || activationHash.get('type') === 'recovery';
-  if (!isActivationLink && localStorage.getItem('sa_onboarding_seen') === '1') {
-    window.location.replace('cabinet.html');
-  }
-</script>
+<script src="auth-route.js?v=1"></script>
 </head>
-<body class="onboard-page" style="--onboard-bg:url('photo/onboard-1.jpg')">
+<body class="onboard-page" style="--onboard-bg:url('photo/onboard-1.webp')">
 
 <div id="activate" class="activate-page">
   <div class="activate-card">
@@ -64,8 +52,8 @@
 
   <div class="onboard__bg-track" aria-hidden="true">
     <!-- Заміни шляхи на свої фото в photo/ -->
-    <div class="onboard__bg onboard__bg--active" style="--onboard-photo:url('photo/onboard-1.jpg')"></div>
-    <div class="onboard__bg" style="--onboard-photo:url('photo/onboard-2.jpg')"></div>
+    <div class="onboard__bg onboard__bg--active" style="--onboard-photo:url('photo/onboard-1.webp')"></div>
+    <div class="onboard__bg" style="--onboard-photo:url('photo/onboard-2.webp')"></div>
     <div class="onboard__bg" style="--onboard-photo:url('photo/onboard-3.jpg')"></div>
   </div>
 
@@ -105,6 +93,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4"></script>
 <script src="supabase-config.js?v=3"></script>
-<script src="enter.js?v=7"></script>
+<script src="enter.js?v=8"></script>
 </body>
 </html>

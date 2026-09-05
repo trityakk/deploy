@@ -11,7 +11,7 @@
   position: absolute;
   inset: -18px;
   z-index: 0;
-  background: url('photo/LB.png') center / cover no-repeat;
+  background: url('photo/LB.webp') center / cover no-repeat;
   filter: blur(14px) saturate(1.08) sepia(0.1) brightness(0.64);
   transform: scale(1.04);
 }

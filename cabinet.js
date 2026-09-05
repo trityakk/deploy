@@ -9,73 +9,16 @@
     }
   }
 
-  // Ключи синхронизации должны быть объявлены до первого вызова
-  // saveProgress: старт кабинета сохраняет streak и активную вкладку сразу.
-  var SYNC_KEYS = [
-    'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
-    'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak', 'sa_theme',
-    'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab', 'sa_sidebar_open_mobile',
-    'sa_display_name'
-  ];
-
-  // Тонка обгортка над localStorage. localStorage лишається миттєвим
-  // локальним кешем (UI читає саме з нього), а Supabase — джерело правди
-  // між пристроями.
-  // schedulePushProgress визначена нижче (function-декларація, тому
-  // доступна тут завдяки hoisting) і сама вирішує, чи ключ взагалі
-  // варто синхронізувати.
-  function saveProgress(key, value) {
-    try {
-      var serialized = typeof value === 'string' ? value : JSON.stringify(value);
-      localStorage.setItem(key, serialized);
-      // Отдельная копия по email переживает logout/login и страхует от
-      // краткого сбоя Supabase. Серверная запись всё равно остаётся главным
-      // источником данных при следующем входе.
-      if (user && user !== 'guest') {
-        localStorage.setItem(accountCachePrefix(user) + key, serialized);
-      }
-      schedulePushProgress(key);
-    } catch (e) {
-      console.warn('Не вдалося зберегти прогрес (' + key + '):', e);
-    }
-  }
-
-  function accountCachePrefix(email) {
-    return 'sa_account_cache::' + encodeURIComponent(String(email || '').toLowerCase()) + '::';
-  }
-
+  var progressStore = window.courseProgress;
   function loadProgress(key, fallback) {
-    try {
-      var raw = localStorage.getItem(key);
-      if (raw === null) return fallback;
-      // theme/last_chapter/user зберігаються як прості рядки, інше — як JSON
-      if (key === 'sa_theme' || key === 'sa_last_chapter' || key === 'sa_user' || key === 'sa_display_name' || key === 'sa_active_tab') return raw;
-      return safeJSONParse(raw, fallback);
-    } catch (e) {
-      console.warn('Не вдалося завантажити прогрес (' + key + '):', e);
-      return fallback;
-    }
+    var raw = localStorage.getItem(key);
+    if (raw === null) return fallback;
+    if (['sa_user','sa_display_name','sa_theme','sa_last_chapter','sa_active_tab','sa_overview_tab'].includes(key)) return raw;
+    return safeJSONParse(raw, fallback);
   }
-
-  var user = loadProgress('sa_user', 'guest') || 'guest';
-
-  function clearLocalAccountCache() {
-    var keys = [
-      'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
-      'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak',
-      'sa_theme', 'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab',
-      'sa_sidebar_open_mobile', 'sa_display_name'
-    ];
-    keys.forEach(function (key) { localStorage.removeItem(key); });
-    try {
-      var dynamic = [];
-      for (var i = 0; i < localStorage.length; i += 1) {
-        var key = localStorage.key(i);
-        if (key && key.indexOf('hw_marked_') === 0) dynamic.push(key);
-      }
-      dynamic.forEach(function (key) { localStorage.removeItem(key); });
-    } catch (e) {}
-  }
+  function saveProgress(key, value) { progressStore.set(key, value); }
+  var user = loadProgress('sa_user', 'guest');
+  function pushProgressNow() { return progressStore.flush(); }
 
   var loginModal = document.getElementById('cabinetLoginModal');
   var accountMenu = document.getElementById('sidebarAccountMenu');
@@ -112,6 +55,7 @@
     passwordChangeModal.setAttribute('aria-hidden', 'true');
     if (passwordChangeForm) passwordChangeForm.reset();
   }
+  document.addEventListener('keydown', function (event) { if (event.key === 'Escape') closePasswordChange(); });
   document.querySelectorAll('[data-close-password-modal]').forEach(function (el) {
     el.addEventListener('click', closePasswordChange);
   });
@@ -139,70 +83,8 @@
       button.disabled = false;
     }
   });
-  // Гість не повинен бачити кабінет або мати можливість взаємодіяти з ним.
-  // Важливо: це лише UI-запобіжник; повний захист контенту потребує його
-  // перенесення з цього статичного HTML у захищений backend/API.
-  if (loginModal) loginModal.style.display = user === 'guest' ? 'flex' : 'none';
-
-  // Вхід через Supabase Auth.
-  if (window.startAmazonSupabase) {
-    window.doLogin = async function (e) {
-      e.preventDefault();
-      var email = document.getElementById('cabinetLoginInput').value.trim().toLowerCase();
-      var password = document.getElementById('cabinetPassInput').value;
-      var errorEl = document.getElementById('cabinetLoginError');
-      var button = document.querySelector('.login-submit');
-      if (errorEl) { errorEl.style.display = 'none'; errorEl.textContent = ''; }
-      if (button) button.disabled = true;
-      try {
-        var result = await window.startAmazonSupabase.auth.signInWithPassword({ email: email, password: password });
-        if (result.error) throw result.error;
-        var access = await window.startAmazonSupabase.rpc('has_active_course_access');
-        if (access.error) throw access.error;
-        if (access.data !== true) {
-          await window.startAmazonSupabase.auth.signOut();
-          throw new Error('no_access');
-        }
-        localStorage.setItem('sa_user', email);
-        localStorage.removeItem('sa_token');
-        window.location.reload();
-      } catch (err) {
-        if (errorEl) {
-          errorEl.style.display = 'block';
-          errorEl.textContent = err.message === 'no_access'
-            ? 'Для цього email ще немає оплаченного доступу.'
-            : 'Невірний email або пароль.';
-        }
-      } finally {
-        if (button) button.disabled = false;
-      }
-      return false;
-    };
-
-    // Не довіряємо localStorage як доказу входу: він легко редагується через
-    // DevTools. Справжнім джерелом авторизації є Supabase session.
-  window.startAmazonSupabase.auth.getSession().then(function (result) {
-      var session = result && result.data && result.data.session;
-      if (!session || !session.user || !session.user.email) {
-        // Не стираем локальный кеш на кратком auth-loading: Supabase может
-        // вернуть null до восстановления сохранённой сессии.
-        if (loginModal) loginModal.style.display = 'flex';
-        return;
-      }
-      var sessionEmail = session.user.email.toLowerCase();
-      if (localStorage.getItem('sa_user') !== sessionEmail) {
-        clearLocalAccountCache();
-        localStorage.setItem('sa_user', sessionEmail);
-      }
-      restoreAccountCache(sessionEmail);
-      // Синхронизация запускается только после подтверждения сессии. Раньше
-      // она стартовала параллельно с getSession() и иногда затирала свежие
-      // локальные данные результатом незавершённого запроса.
-      pullProgressFromServer(sessionEmail, function (changed) {
-        if (changed) location.reload();
-      });
-    });
-  }
+  // Authentication and server hydration finish in cabinet-loader before UI boot.
+  if (loginModal) loginModal.style.display = 'none';
 
   // The sidebar starts open (class="open" in HTML) on all viewports.
   // On mobile it's a fullscreen overlay, so we explicitly (re)apply the
@@ -288,38 +170,11 @@
   nameEl.textContent = displayName || user;
 
   function saveDisplayName(value) {
-    var cleanValue = String(value || '').trim();
-    if (!cleanValue) cleanValue = user;
+    var cleanValue = String(value || '').trim().slice(0, 100);
     displayName = cleanValue;
-    saveProgress('sa_display_name', cleanValue === user ? '' : cleanValue);
-    // Имя должно переживать закрытие вкладки сразу после редактирования,
-    // поэтому не полагаемся только на debounce-синхронизацию прогресса.
-    if (window.startAmazonSupabase && user !== 'guest') {
-      setTimeout(function () { pushProgressNow(user); }, 0);
-    }
-    if (!window.startAmazonSupabase || user === 'guest') return;
-    window.startAmazonSupabase.auth.getSession().then(function (result) {
-      var session = result && result.data && result.data.session;
-      if (!session || !session.user) return;
-      return window.startAmazonSupabase.from('profiles').upsert({
-        id: session.user.id,
-        email: session.user.email.toLowerCase(),
-        display_name: cleanValue === user ? null : cleanValue,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'id' }).then(function (result) {
-        if (result.error) throw result.error;
-        // Не перезаписываем metadata только именем: иначе Auth может удалить
-        // сохранённый course_progress при следующем входе в другом браузере.
-        return window.startAmazonSupabase.auth.updateUser({
-          data: Object.assign({}, session.user.user_metadata || {}, {
-            display_name: cleanValue === user ? null : cleanValue,
-            course_progress: buildProgressSnapshot()
-          })
-        });
-      });
-    }).catch(function (error) {
-      console.warn('Не вдалося зберегти ім’я профілю:', error);
-    });
+    nameEl.textContent = cleanValue || user;
+    saveProgress('sa_display_name', cleanValue);
+    progressStore.flush();
   }
 
   nameEl.addEventListener('click', function () {
@@ -344,32 +199,6 @@
     if (e.key === 'Enter') { e.preventDefault(); nameEl.blur(); }
   });
 
-  // Имя хранится в профиле отдельно от учебного прогресса. Подтягиваем его
-  // после загрузки кабинета, чтобы оно восстанавливалось и на новом устройстве.
-  if (window.startAmazonSupabase && user !== 'guest') {
-    window.startAmazonSupabase.auth.getSession().then(function (result) {
-      var session = result && result.data && result.data.session;
-      if (!session || !session.user) return;
-      return window.startAmazonSupabase.from('profiles')
-        .select('display_name')
-        .eq('id', session.user.id)
-        .maybeSingle();
-    }).then(async function (result) {
-      var serverName = result && result.data && result.data.display_name;
-      if (!serverName) {
-        var sessionResult = await window.startAmazonSupabase.auth.getSession();
-        var sessionUser = sessionResult && sessionResult.data && sessionResult.data.session && sessionResult.data.session.user;
-        serverName = sessionUser && sessionUser.user_metadata && sessionUser.user_metadata.display_name;
-      }
-      if (serverName) {
-        displayName = serverName;
-        nameEl.textContent = serverName;
-        saveProgress('sa_display_name', serverName);
-      }
-    }).catch(function (error) {
-      console.warn('Не вдалося завантажити ім’я профілю:', error);
-    });
-  }
   var avatarNum = Math.floor(Math.random() * 3) + 1;
 document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg';
   var prefaceAvatar = document.getElementById('prefaceAvatarImg');
@@ -924,215 +753,21 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
     setTimeout(forceScrollTopIfUntouched, delay);
   });
 
-  window.doLogout = function () {
-    // Перед logout принудительно фиксируем всё текущее состояние аккаунта.
-    // Это не зависит от debounce, pagehide или скорости сети.
-    persistAccountCacheNow(user);
-    if (window.startAmazonSupabase) window.startAmazonSupabase.auth.signOut();
-    clearLocalAccountCache();
+  window.doLogout = async function () {
+    if (!await progressStore.flush()) {
+      window.alert('Зміни ще не збережено. Перевір з’єднання та повтори вихід.');
+      return;
+    }
+    var result = await window.startAmazonSupabase.auth.signOut();
+    if (result.error) { window.alert('Не вдалося вийти. Спробуй ще раз.'); return; }
+    progressStore.clearView();
     localStorage.removeItem('sa_user');
     localStorage.removeItem('sa_token');
-    localStorage.removeItem('sa_display_name');
     window.location.href = 'index.html';
   };
-
-  // ─── Синхронізація прогресу через Supabase ───
-  // Email визначає доступ до курсу, а прогрес зберігається за UUID
-  // авторизованого користувача. Тому він не прив'язаний до одного браузера.
-  function isSyncKey(key) {
-    return SYNC_KEYS.indexOf(key) !== -1 || String(key).indexOf('hw_marked_') === 0;
-  }
-
-  function backendReady() {
-    return !!window.startAmazonSupabase;
-  }
-
-  function currentUserEmail() {
-    var u = loadProgress('sa_user', 'guest');
-    return (u && u !== 'guest') ? u : null;
-  }
-
-  function restoreAccountCache(email) {
-    if (!email) return;
-    var prefix = accountCachePrefix(email);
-    try {
-      for (var i = 0; i < localStorage.length; i += 1) {
-        var key = localStorage.key(i);
-        if (!key || key.indexOf(prefix) !== 0) continue;
-        var originalKey = key.slice(prefix.length);
-        if (!isSyncKey(originalKey)) continue;
-        var value = localStorage.getItem(key);
-        if (value !== null && localStorage.getItem(originalKey) !== value) {
-          localStorage.setItem(originalKey, value);
-        }
-      }
-    } catch (e) {
-      console.warn('Не вдалося відновити локальну копію акаунта:', e);
-    }
-  }
-
-  var pushTimer = null;
-  function buildProgressSnapshot() {
-    var snapshot = {};
-    for (var i = 0; i < localStorage.length; i += 1) {
-      var k = localStorage.key(i);
-      if (!isSyncKey(k)) continue;
-      var v = localStorage.getItem(k);
-      if (v !== null) snapshot[k] = v;
-    }
-    return snapshot;
-  }
-
-  function persistAccountCacheNow(email) {
-    if (!email || email === 'guest') return;
-    var snapshot = buildProgressSnapshot();
-    var prefix = accountCachePrefix(email);
-    try {
-      Object.keys(snapshot).forEach(function (key) {
-        localStorage.setItem(prefix + key, snapshot[key]);
-      });
-    } catch (e) {
-      console.warn('Не вдалося зафіксувати локальну копію акаунта:', e);
-    }
-  }
-  function schedulePushProgress(key) {
-    if (!backendReady() || !isSyncKey(key)) return;
-    var email = currentUserEmail();
-    if (!email) return;
-    clearTimeout(pushTimer);
-    // Дебаунс: чекаємо коротку паузу в діях, щоб не бити по бекенду
-    // на кожен клік — за читання розділу типово прилітає кілька
-    // saveProgress() підряд (позначка прочитаного + активна вкладка тощо).
-    pushTimer = setTimeout(function () { pushProgressNow(email); }, 500);
-  }
-
-  var progressWriteChain = Promise.resolve();
-  function pushProgressNow(email) {
-    progressWriteChain = progressWriteChain.then(function () {
-    var snapshot = buildProgressSnapshot();
-    return window.startAmazonSupabase.auth.getSession().then(function (result) {
-      var session = result && result.data && result.data.session;
-      if (!session || !session.user) return;
-      var tableWrite = window.startAmazonSupabase.from('course_progress').upsert({
-        user_id: session.user.id,
-        data: snapshot,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' }).then(function (result) {
-        if (result && result.error) {
-          console.warn('Не вдалося записати прогрес у course_progress:', JSON.stringify({
-            message: result.error.message, code: result.error.code,
-            details: result.error.details, hint: result.error.hint
-          }));
-        }
-        return !(result && result.error);
-      });
-      // Дубль у Auth metadata працює між браузерами навіть якщо таблиця
-      // course_progress має старі або неповні RLS-політики.
-      var metadata = Object.assign({}, session.user.user_metadata || {}, {
-        display_name: displayName || undefined,
-        course_progress: snapshot
-      });
-      var authWrite = window.startAmazonSupabase.auth.updateUser({ data: metadata }).then(function (result) {
-        // Старі проєкти можуть мати таблицю без GRANT для authenticated.
-        // Прогрес також зберігається в Auth metadata, тому помилка таблиці
-        // не повинна блокувати відновлення даних між браузерами.
-        if (result && result.error) {
-          console.warn('Не вдалося прочитати course_progress, використано профіль:', JSON.stringify({
-            message: result.error.message, code: result.error.code,
-            details: result.error.details, hint: result.error.hint
-          }));
-        }
-        return true;
-      });
-      return Promise.all([tableWrite, authWrite]);
-    }).then(function () {
-      return true;
-    }).catch(function (error) {
-      console.warn('Не вдалося синхронізувати прогрес, буде повтор:', JSON.stringify({
-        message: error && error.message, code: error && error.code,
-        details: error && error.details, hint: error && error.hint,
-        status: error && error.status
-      }));
-      return false;
-    });
-    });
-    return progressWriteChain;
-  }
-
-  // Після першого входу гарантовано створюємо серверний запис навіть якщо
-  // користувач ще нічого не натиснув у кабінеті.
-  if (user !== 'guest') {
-    setTimeout(function () {
-      pushProgressNow(user).then(function (saved) {
-        if (saved) return;
-        setTimeout(function () { pushProgressNow(user); }, 2500);
-      });
-    }, 2200);
-  }
-
-  // Витягує прогрес із сервера і мерджить у localStorage. Викликається:
-  // 1) одразу після успішного логіна (перед reload) — щоб на новому
-  //    пристрої підтягнувся вже накопичений прогрес;
-  // 2) один раз за сесію вкладки при відкритті кабінету — щоб зміни,
-  //    зроблені на іншому пристрої, долетіли й сюди.
-  function pullProgressFromServer(email, done) {
-    if (!backendReady() || !email) { if (done) done(false); return; }
-    window.startAmazonSupabase.auth.getSession()
-      .then(function (result) {
-        var session = result && result.data && result.data.session;
-        if (!session || !session.user) return null;
-        return window.startAmazonSupabase
-          .from('course_progress')
-          .select('data')
-          .eq('user_id', session.user.id)
-          .maybeSingle()
-          .then(function (progressResult) {
-            return {
-              data: progressResult.data,
-              error: progressResult.error,
-              metadata: session.user.user_metadata || {}
-            };
-          });
-      })
-      .then(function (result) {
-        var changed = false;
-        if (result && result.error) throw result.error;
-        var tableData = result && result.data && result.data.data;
-        var tableObject = tableData && typeof tableData === 'object'
-          ? tableData
-          : (typeof tableData === 'string' ? safeJSONParse(tableData, {}) : {});
-        var metadataData = result && result.metadata && result.metadata.course_progress;
-        var metadataObject = metadataData && typeof metadataData === 'object'
-          ? metadataData
-          : (typeof metadataData === 'string' ? safeJSONParse(metadataData, {}) : {});
-        // Auth metadata is written together with every progress update and is
-        // authoritative for keys that may be missing in an older DB row.
-        var serverObject = Object.assign({}, tableObject, metadataObject);
-        if (Object.keys(serverObject).length > 0) {
-          Object.keys(serverObject).forEach(function (k) {
-              if (!isSyncKey(k)) return;
-              if (localStorage.getItem(k) !== serverObject[k]) {
-                localStorage.setItem(k, serverObject[k]);
-                changed = true;
-              }
-            });
-        } else if (Object.keys(buildProgressSnapshot()).length > 0) {
-          // Перший вхід після міграції: зберігаємо локальний прогрес
-          // у профілі Supabase, навіть якщо рядок уже існує з data = {}.
-          return pushProgressNow(email).then(function () {
-            if (done) done(false);
-          });
-        }
-        if (done) done(changed);
-      })
-      .catch(function () { if (done) done(false); });
-  }
-
-  // Якщо користувач одразу оновив або закрив сторінку після кліку, debounce
-  // може ще не встигнути відправити дані. Остання спроба також виконується
-  // при виході зі сторінки; це не замінює debounce, а страхує його.
-  window.addEventListener('pagehide', function () {
-    if (user !== 'guest') pushProgressNow(user);
+  window.addEventListener('online', function () { progressStore.flush(); });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') progressStore.flush();
   });
 
   var toggleBtn = document.querySelector('.sidebar__toggle');
@@ -2469,7 +2104,7 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   window.resetProgress = function () {
     if (!window.confirm('Видалити весь прогрес: прочитані розділи, тести, закладки, іспит? Цю дію не можна скасувати.')) return;
     var keys = ['sa_read', 'sa_homework', 'sa_homework_answers', 'sa_bookmarks', 'sa_exam_passed', 'sa_last_chapter', 'sa_streak', 'sa_flashcards'];
-    keys.forEach(function (k) { localStorage.removeItem(k); });
+    keys.forEach(function (k) { saveProgress(k, null); });
     // також чистимо позначки відповідей по кожному розділу (hw_marked_ch1 …)
     try {
       var toRemove = [];
@@ -2477,9 +2112,9 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
         var k = localStorage.key(i);
         if (k && k.indexOf('hw_marked_') === 0) toRemove.push(k);
       }
-      toRemove.forEach(function (k) { localStorage.removeItem(k); });
+      toRemove.forEach(function (k) { saveProgress(k, null); });
     } catch (e) {}
-    pushProgressNow(user).finally(function () { window.location.reload(); });
+    pushProgressNow().then(function (saved) { if (saved) window.location.reload(); else window.alert('Не вдалося зберегти скидання. Перевір з’єднання.'); });
   };
 
   updateExamUI();

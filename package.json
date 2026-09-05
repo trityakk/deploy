@@ -1,0 +1,16 @@
+{
+  "name": "start-amazon-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "check": "node scripts/check-project.cjs",
+    "build": "node scripts/build.cjs"
+  },
+  "devDependencies": {
+    "cssnano": "9.0.2",
+    "lighthouse": "13.4.1",
+    "postcss": "8.5.28",
+    "terser": "5.51.2"
+  }
+}

@@ -6,7 +6,7 @@
 
   // Посилання з листа після оплати відкриває цей режим і дозволяє
   // покупцеві створити пароль без окремої реєстрації.
-  if (new URLSearchParams(window.location.search).get('mode') === 'activate') {
+  if (window.courseAuthCallback && window.courseAuthCallback.active) {
     var activate = document.getElementById('activate');
     var onboard = document.getElementById('onboard');
     var form = document.getElementById('activateForm');
@@ -65,27 +65,20 @@
         toggle.setAttribute('aria-pressed', showing ? 'false' : 'true');
       });
     });
-    async function completeAuthCallback() {
-      var code = new URLSearchParams(window.location.search).get('code');
-      if (!code) return;
-      var result = await window.startAmazonSupabase.auth.exchangeCodeForSession(code);
-      if (result && result.error) throw result.error;
-    }
-
-    completeAuthCallback().catch(function (err) {
-      console.warn('Не вдалося обміняти код активації на сесію.', err);
-    }).finally(function () {
+    // Supabase consumes the URL during initialization; do not exchange it twice.
+    Promise.resolve().then(function () {
+      if (window.courseAuthCallback.error) return null;
       return waitForRecoverySession();
     }).then(function (session) {
       setActivationReady(!!session);
       if (session) {
         // Recovery tokens are credentials. Remove them from the address bar
         // before the user types a new password or leaves the page.
-        window.history.replaceState(null, document.title, new URL('enter.html', window.location.href).href);
+        window.history.replaceState(null, document.title, new URL('enter.html?mode=activate', window.location.href).href);
       }
       if (!session && error) {
         var params = new URLSearchParams(window.location.search);
-        var reason = params.get('error_description') || params.get('error');
+        var reason = window.courseAuthCallback.error || params.get('error_description') || params.get('error');
         error.textContent = reason
           ? 'Не вдалося підтвердити посилання: ' + reason.replace(/\+/g, ' ')
           : 'Не вдалося підтвердити сесію. Відкрий лист ще раз або запроси нове посилання.';

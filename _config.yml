@@ -1,0 +1,17 @@
+# GitHub Pages branch publishing: keep tooling and archives out of the site.
+exclude:
+  - node_modules
+  - scripts
+  - tests
+  - supabase
+  - private-course-content
+  - photo/originals
+  - photo/archive-originals
+  - photo/LB.png
+  - photo/onboard-1.jpg
+  - photo/onboard-2.jpg
+  - dist
+  - audit-results
+  - package.json
+  - package-lock.json
+  - AUDIT_PROGRESS.md

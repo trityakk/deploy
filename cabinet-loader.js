@@ -1,63 +1,6 @@
-// Recovery links occasionally arrive at cabinet.html when Supabase uses the
-// project's default Site URL. Route them to the password-creation screen.
-var cabinetRecoverySearch = new URLSearchParams(window.location.search);
-var cabinetRecoveryHash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === 'recovery' || cabinetRecoveryHash.get('type') === 'recovery') {
-  var cabinetRecoveryUrl = new URL('enter.html', window.location.href);
-  cabinetRecoveryUrl.searchParams.set('mode', 'activate');
-  cabinetRecoveryUrl.hash = window.location.hash;
-  window.location.replace(cabinetRecoveryUrl.href);
-}
-
-// Load the course body before the application code starts.
+// Load private content and hydrate account state before starting the UI.
 (async function () {
   var accessGranted = false;
-
-  function clearLocalAccountState() {
-    var keys = [
-      'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
-      'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak',
-      'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab',
-      'sa_sidebar_open_mobile', 'sa_display_name'
-    ];
-    keys.forEach(function (key) { localStorage.removeItem(key); });
-    var dynamic = [];
-    for (var i = 0; i < localStorage.length; i += 1) {
-      var key = localStorage.key(i);
-      if (key && key.indexOf('hw_marked_') === 0) dynamic.push(key);
-    }
-    dynamic.forEach(function (key) { localStorage.removeItem(key); });
-  }
-
-  function setCurrentLocalUser(email) {
-    var next = String(email || '').toLowerCase();
-    var previous = String(localStorage.getItem('sa_user') || '').toLowerCase();
-    if (previous && next && previous !== next) clearLocalAccountState();
-    localStorage.setItem('sa_user', next);
-    restoreAccountCache(next);
-  }
-
-  function restoreAccountCache(email) {
-    var prefix = 'sa_account_cache::' + encodeURIComponent(String(email || '').toLowerCase()) + '::';
-    var allowed = [
-      'sa_read', 'sa_last_chapter', 'sa_bookmarks', 'sa_flashcards',
-      'sa_homework', 'sa_homework_answers', 'sa_exam_passed', 'sa_streak',
-      'sa_theme', 'sa_tour_seen', 'sa_active_tab', 'sa_overview_tab',
-      'sa_sidebar_open_mobile', 'sa_display_name'
-    ];
-    try {
-      for (var i = 0; i < localStorage.length; i += 1) {
-        var key = localStorage.key(i);
-        if (!key || key.indexOf(prefix) !== 0) continue;
-        var originalKey = key.slice(prefix.length);
-        if (allowed.indexOf(originalKey) === -1 && originalKey.indexOf('hw_marked_') !== 0) continue;
-        var value = localStorage.getItem(key);
-        if (value !== null) localStorage.setItem(originalKey, value);
-      }
-    } catch (e) {
-      console.warn('Не вдалося відновити локальну копію акаунта:', e);
-    }
-  }
 
   function loadScript(src) {
     return new Promise(function (resolve, reject) {
@@ -85,6 +28,21 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
     throw lastError;
   }
 
+  async function hydrateProgress(session) {
+    await loadScript('cabinet-progress.js?v=1');
+    window.courseProgress = window.createCourseProgress(window.startAmazonSupabase, localStorage, {
+      onStatus: function (state) {
+        var el = document.getElementById('progressSyncStatus');
+        if (el) {
+          el.textContent = state === 'saved' ? 'Збережено' : state === 'pending' ? 'Зберігаємо…' : 'Немає з’єднання — зміни збережено на цьому пристрої';
+          el.dataset.state = state;
+        }
+      },
+      onError: function (error) { console.warn('Progress sync:', error.message); }
+    });
+    await window.courseProgress.init(session);
+  }
+
   try {
     var target = document.getElementById('cabinetContent');
     for (const src of [
@@ -100,7 +58,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
       var access = await window.startAmazonSupabase.rpc('has_active_course_access');
       if (access.error) throw access.error;
       if (access.data === true) {
-        setCurrentLocalUser(session.user.email);
+        await hydrateProgress(session);
         var content = await window.startAmazonSupabase.storage
           .from('course-content')
           .download('cabinet-content.html');
@@ -159,11 +117,11 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
           throw contentError;
         }
         target.innerHTML = await contentFile.text();
-        setCurrentLocalUser(email);
+        await hydrateProgress(login.data.session);
         localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
         if (loginModal) loginModal.style.display = 'none';
-        await loadScript('cabinet.js?v=85');
+        await loadScript('cabinet.js?v=86');
       } catch (error) {
         if (errorEl) {
           errorEl.style.display = 'block';
@@ -172,8 +130,9 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
             : error.message === 'access_check_failed'
               ? 'Не вдалося перевірити доступ до курсу. Онови сторінку та спробуй ще раз.'
               : error.message === 'content_load_failed'
-                ? 'Доступ підтверджено, але Storage не віддав матеріали курсу. Онови сторінку через кілька секунд.'
-                : 'Невірний email або пароль.';
+                ? 'Доступ підтверджено, але матеріали не завантажились. Спробуй ще раз.'
+                : error.code === 'invalid_credentials' ? 'Невірний email або пароль.'
+                  : 'Не вдалося завантажити кабінет. Перевір з’єднання та спробуй ще раз.';
         }
       } finally {
         if (button) button.disabled = false;
@@ -184,7 +143,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
     if (recoveryButton) recoveryButton.addEventListener('click', async function () {
       var email = document.getElementById('cabinetLoginInput').value.trim().toLowerCase();
       var errorEl = document.getElementById('cabinetLoginError');
-      if (!email) {
+      if (!email || !document.getElementById('cabinetLoginInput').checkValidity()) {
         if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Спочатку введіть email.'; }
         return;
       }
@@ -195,9 +154,9 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
         if (recovery.error) throw recovery.error;
         if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Нове посилання надіслано на email.'; }
       } catch (error) {
-        if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Не вдалося надіслати посилання. Спробуй ще раз.'; }
+        if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = error.status === 429 ? 'Забагато запитів. Зачекай перед наступною спробою.' : 'Не вдалося надіслати посилання. Спробуй пізніше.'; }
       } finally {
-        recoveryButton.disabled = false;
+        setTimeout(function () { recoveryButton.disabled = false; }, 60000);
       }
     });
     return;
@@ -205,7 +164,7 @@ if (cabinetRecoverySearch.has('code') || cabinetRecoverySearch.get('type') === '
 
   // Load the application after the protected body (or guest state) is ready.
   try {
-    await loadScript('cabinet.js?v=85');
+    await loadScript('cabinet.js?v=86');
   } catch (error) {
     document.body.classList.add('cabinet-load-error');
     console.error('Не вдалося запустити кабінет.', error);

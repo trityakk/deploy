@@ -5,3 +5,7 @@
 .DS_Store
 .npm-cache/
 supabase/.temp/
+node_modules/
+dist/
+audit-results/
+photo/originals/
