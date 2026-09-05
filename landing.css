@@ -42,3 +42,4 @@
 #cabChapterContent{max-height:100%;overflow:auto}
 .cab-frame.preview-reading{filter:none!important;opacity:1!important}
 @media(max-width:600px){.cab-preview-excerpt{font-size:14px}.cab-preview-excerpt h3{font-size:17px}}
+@media(max-width:768px){#curriculum .curr-item[data-cat="ai"] .curr-badge{display:none}}
