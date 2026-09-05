@@ -61,7 +61,7 @@
     var target = document.getElementById('cabinetContent');
     for (const src of [
       'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.4',
-      'supabase-config.js?v=3'
+      'platform-client.js?v=1'
     ]) await loadScript(src);
 
     // The course body is private. Only an authenticated user with an active

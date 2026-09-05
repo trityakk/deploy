@@ -4,7 +4,7 @@ const terser = require('terser');
 // Only explicit public files are published. Never copy the repository root.
 const pages = ['index.html','cabinet.html','enter.html','payment-success.html','payment-failed.html'];
 const assets = ['landing.js','auth-route.js','cabinet.js','cabinet-progress.js','cabinet-loader.js',
-  'cabinet-early.js','enter.js','supabase-config.js','ui-accessibility.js',
+  'cabinet-early.js','enter.js','platform-client.js','ui-accessibility.js',
   'landing.css','styles-glass.css','light-theme.css','cabinet-guest.css','cabinet-overrides.css','enter.css'];
 async function copyTree(source,target) {
   await fs.mkdir(target,{recursive:true});
