@@ -138,7 +138,7 @@
   ]
 }
 </script>
-<link rel="stylesheet" href="landing.css?v=5">
+<link rel="stylesheet" href="landing.css?v=6">
 
 </head>
 <body>
@@ -161,6 +161,7 @@
       <span class="h1-line" style="color:#fff;position:relative;top:-7px">Від ідеї до першого</span>
       <span class="h1-line"><span style="color:var(--g)">про</span><span style="color:#fff">дажу на Amazon</span></span>
     </h1>
+    <p class="hero-format reveal d2">Практичний текстовий курс українською: обери товар, порахуй витрати та підготуй запуск.</p>
     <div class="eyebrow reveal" id="eyebrowBadge" style="margin-top:36px;position:relative;top:7px"><div class="pulse"></div><span id="eyebrowText">Навчимо продавати на Amazon</span></div>
     <div class="hero-stats reveal d3" style="margin-top:42px;transform:translateY(8px)">
       <div class="hs"><div class="hs-val">47</div><div class="hs-label">Готових рішень для запуску</div></div>
@@ -250,6 +251,7 @@
     <div class="s-tag s-tag-d reveal">Кабінет</div>
     <h2 class="s-head s-head-d reveal d1">Так виглядатиме твій<br>особистий кабінет</h2>
     <p class="reveal d1" style="max-width:520px;color:rgba(20,20,26,0.78);font-size:16px;line-height:1.65;margin:16px 0 0;font-weight:450">Після оплати ти отримуєш доступ до закритого кабінету на цьому ж сайті — весь курс, розділи, додатки і твій прогрес зберігаються тут в одному місці.</p>
+    <button type="button" class="cab-preview-toggle" id="cabPreviewToggle" aria-controls="cabChapterContent" aria-expanded="false">Відкрити фрагмент розділу →</button>
      <div class="cab-scroll-wrap" id="cabScrollWrap">
     <div class="cab-frame reveal">
       <div class="cab-topbar">
@@ -380,15 +382,20 @@
               </div>
             </div>
             <div class="cab-chapter-content" id="cabChapterContent" style="display:none">
-              <div class="cab-main__tag" id="cabTag"></div>
-              <div class="cab-main__title" id="cabTitle"></div>
+              <button type="button" class="cab-preview-back" id="cabPreviewBack">← До розділів</button>
+              <div class="cab-main__tag" id="cabTag">РОЗДІЛ 01 · ФРАГМЕНТ КУРСУ</div>
+              <div class="cab-main__title" id="cabTitle">Що таке Amazon і як це працює</div>
               <div class="cab-box cab-box--green" id="cabBox">
                 <div class="cab-box__label">🏆 ПІСЛЯ ЦЬОГО РОЗДІЛУ ТИ:</div>
-                <div class="cab-box__item" id="cabBox1"></div>
-                <div class="cab-box__item" id="cabBox2"></div>
-                <div class="cab-box__item" id="cabBox3"></div>
+                <div class="cab-box__item" id="cabBox1">Зрозумієш різницю між FBA та FBM</div>
+                <div class="cab-box__item" id="cabBox2">Дізнаєшся, як працює продаж на Amazon</div>
+                <div class="cab-box__item" id="cabBox3">Побачиш, з чого почати підготовку</div>
               </div>
-              <div class="cab-lines" id="cabLines"></div>
+              <div class="cab-preview-excerpt">
+                <h3>1.2 — FBA або FBM: одне рішення на старті</h3>
+                <p><strong>FBA — Fulfillment by Amazon.</strong> Ти надсилаєш товар на склад Amazon, далі вони все роблять самі: зберігають, пакують, доставляють, обробляють повернення.</p>
+                <p><strong>FBM — Fulfillment by Merchant.</strong> Ти зберігаєш товар у себе, пакуєш кожне замовлення, відправляєш поштою і розбираєшся з поверненнями.</p>
+              </div>
               <div class="cab-lock-hint"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Продовження доступне після покупки</div>
             </div>
           </div>
@@ -904,7 +911,7 @@
 
 
 
-<script src="landing.js?v=1" defer></script>
+<script src="landing.js?v=2" defer></script>
 <script src="ui-accessibility.js?v=1" defer></script>
 </body>
 </html>

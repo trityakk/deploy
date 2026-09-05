@@ -579,6 +579,37 @@ function animateCounter(el, target, duration){
   }
 })();
 ;
+(function () {
+  var overview = document.getElementById('cabOverview');
+  var chapter = document.getElementById('cabChapterContent');
+  var toggle = document.getElementById('cabPreviewToggle');
+  var back = document.getElementById('cabPreviewBack');
+  if (!overview || !chapter || !toggle || !back) return;
+  function show(open, focus) {
+    overview.style.display = open ? 'none' : '';
+    chapter.style.display = open ? 'block' : 'none';
+    var frame = chapter.closest('.cab-frame');
+    if (frame) frame.classList.toggle('preview-reading',open);
+    if (open && frame) frame.scrollIntoView({block:'center',behavior:'auto'});
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.textContent = open ? 'Повернутися до розділів ←' : 'Відкрити фрагмент розділу →';
+    var cursor = document.getElementById('cabCursor');
+    if (cursor) cursor.style.display = 'none';
+    if (focus) (open ? back : toggle).focus({preventScroll:true});
+  }
+  toggle.addEventListener('click', function () { show(toggle.getAttribute('aria-expanded') !== 'true', false); });
+  back.addEventListener('click', function () { show(false, true); });
+  [overview.querySelectorAll('.cab-card')[1],document.getElementById('cabLink1')].forEach(function (el) {
+    if (!el) return;
+    el.setAttribute('role','button'); el.tabIndex = 0;
+    el.setAttribute('aria-label','Відкрити фрагмент розділу 1');
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function () { show(true, true); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(true, true); }
+    });
+  });
+})();
 // CABINET MOCKUP — cursor wanders around the cabinet
 (function(){
   try {
