@@ -57,3 +57,18 @@ test('explicit removal and reset remain removed after fresh init',async()=>{
   p.set('sa_read',[]);await p.flush();assert.equal(e.row.sa_read,'[]');
   p.set('sa_tour_seen',null);await p.flush();assert.equal(e.row.sa_tour_seen,undefined);
 });
+test('offline queue is rebased onto changes from another browser before rendering',async()=>{
+  const e=setup(),s=storage(),a=create(e.client,s),b=create(e.client,storage());
+  await a.init(e.session);await b.init(e.session);
+  e.failWrite(true);a.set('sa_read',['ch1']);await a.flush();
+  e.failWrite(false);b.set('sa_read',['preface','ch2']);await b.flush();
+  const fresh=create(e.client,s);await fresh.init(e.session);
+  assert.deepEqual(JSON.parse(s.getItem('sa_read')).sort(),['ch1','ch2']);
+  await fresh.flush();assert.deepEqual(JSON.parse(e.row.sa_read),['ch1','ch2']);
+});
+test('failed reinitialization disables writes from the previous initialization',async()=>{
+  const e=setup(),p=create(e.client,storage());await p.init(e.session);
+  e.failRead(true);await assert.rejects(p.init(e.session));
+  p.set('sa_read',[]);assert.equal(await p.flush(),false);
+  assert.equal(e.row.sa_read,'["preface"]');
+});

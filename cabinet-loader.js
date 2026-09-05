@@ -29,7 +29,7 @@
   }
 
   async function hydrateProgress(session) {
-    await loadScript('cabinet-progress.js?v=1');
+    await loadScript('cabinet-progress.js?v=2');
     window.courseProgress = window.createCourseProgress(window.startAmazonSupabase, localStorage, {
       onStatus: function (state) {
         var el = document.getElementById('progressSyncStatus');
@@ -121,7 +121,7 @@
         localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
         if (loginModal) loginModal.style.display = 'none';
-        await loadScript('cabinet.js?v=86');
+        await loadScript('cabinet.js?v=87');
       } catch (error) {
         if (errorEl) {
           errorEl.style.display = 'block';
@@ -164,7 +164,7 @@
 
   // Load the application after the protected body (or guest state) is ready.
   try {
-    await loadScript('cabinet.js?v=86');
+    await loadScript('cabinet.js?v=87');
   } catch (error) {
     document.body.classList.add('cabinet-load-error');
     console.error('Не вдалося запустити кабінет.', error);

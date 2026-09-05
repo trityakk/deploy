@@ -22,6 +22,8 @@
       names.forEach(function (k) { storage.removeItem(k); });
     }
     async function init(session) {
+      ready = false;
+      clearTimeout(timer);
       if (!session || !session.user) throw new Error('session_required');
       owner = session.user.id;
       cacheKey = 'sa_pending::' + owner + '::amazon-course';
@@ -33,7 +35,17 @@
       Object.keys(savedPending).forEach(function (k) {
         var p = savedPending[k];
         if (allowed(k) && p && (p.value === null || typeof p.value === 'string')) {
-          pending[k] = {value: p.value, base: p.base, rev: ++revision};
+          var value = p.value, base = p.base;
+          if ((k === 'sa_read' || k === 'sa_bookmarks') && value !== null) {
+            // Replay only offline changes, not an obsolete full list over a
+            // newer server snapshot from another browser.
+            var before = list(base), after = list(value);
+            var removed = before.filter(function (v) { return !after.includes(v); });
+            var added = after.filter(function (v) { return !before.includes(v); });
+            base = server[k] || null;
+            value = JSON.stringify(Array.from(new Set(list(base).concat(added))).filter(function (v) { return !removed.includes(v); }));
+          }
+          pending[k] = {value: value, base: base, rev: ++revision};
         }
       });
       // Import the legacy local copy only when the account has no server row.

@@ -295,6 +295,14 @@ document.getElementById('avatarImg').src = 'photo/cabavatar' + avatarNum + '.jpg
   });
 
   totalChapters = chapterOrder.length;
+  // The private content may carry old placeholder badges. Count only actual
+  // chapters/appendices, excluding introductions and the final exam.
+  document.querySelectorAll('.overview-tab').forEach(function (tab) {
+    var badge = tab.querySelector('.overview-tab__count');
+    var pattern = tab.dataset.target === 'overviewChapters' ? /^ch\d+$/
+      : tab.dataset.target === 'overviewAppendix' ? /^appendix_[a-z]$/ : null;
+    if (badge && pattern) badge.textContent = chapterOrder.filter(function (id) { return pattern.test(id); }).length;
+  });
 
   function escHtml(s) {
     return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
