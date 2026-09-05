@@ -57,6 +57,20 @@
     return 'Не вдалося завантажити кабінет. Код: ' + stage + (code ? '_' + code : '') + '. Спробуй ще раз.';
   }
 
+  function isInvalidCredentials(error) {
+    var code = String(error && (error.code || error.error_code) || '').toLowerCase();
+    var message = String(error && error.message || '').toLowerCase();
+    return code === 'invalid_credentials' || message.includes('invalid login credentials');
+  }
+
+  function authErrorMessage(error) {
+    if (isInvalidCredentials(error)) return 'Невірний email або пароль. Скористайся «Надіслати нове посилання», щоб задати новий пароль.';
+    var message = String(error && error.message || '').toLowerCase();
+    if (message.includes('failed to fetch') || message.includes('network')) return 'Safari не зміг з’єднатися із сервером входу. Вимкни блокування контенту для цієї сторінки та спробуй ще раз.';
+    if (error && error.status === 429) return 'Забагато спроб входу. Зачекай кілька хвилин і повтори.';
+    return loadErrorMessage(error);
+  }
+
   try {
     var target = document.getElementById('cabinetContent');
     for (const src of [
@@ -154,7 +168,7 @@
               ? 'Не вдалося перевірити доступ до курсу. Онови сторінку та спробуй ще раз.'
               : error.message === 'content_load_failed'
                 ? 'Доступ підтверджено, але матеріали не завантажились. Спробуй ще раз.'
-                : error.code === 'invalid_credentials' ? 'Невірний email або пароль.'
+                : stage === 'AUTH' ? authErrorMessage(error)
                   : loadErrorMessage(error);
         }
       } finally {
