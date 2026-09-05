@@ -7,7 +7,7 @@
       var script = document.createElement('script');
       script.src = src;
       script.onload = resolve;
-      script.onerror = reject;
+      script.onerror = function () { reject(new Error('script_load_failed')); };
       document.body.appendChild(script);
     });
   }
@@ -40,7 +40,21 @@
       },
       onError: function (error) { console.warn('Progress sync:', error.message); }
     });
-    await window.courseProgress.init(session);
+    try {
+      await window.courseProgress.init(session);
+    } catch (cause) {
+      var error = new Error('progress_load_failed');
+      error.cause = cause;
+      throw error;
+    }
+  }
+
+  function loadErrorMessage(error) {
+    var code = String(error && error.cause && error.cause.code || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0,32);
+    if (error.message === 'progress_load_failed') return 'Не вдалося прочитати збережений прогрес. Дані не скинуто. Код: PROGRESS' + (code ? '_' + code : '') + '.';
+    if (error.message === 'script_load_failed') return 'Не завантажився файл кабінету. Код: SCRIPT. Онови сторінку.';
+    var stage = String(error.stage || 'LOAD').replace(/[^A-Z_]/g, '');
+    return 'Не вдалося завантажити кабінет. Код: ' + stage + (code ? '_' + code : '') + '. Спробуй ще раз.';
   }
 
   try {
@@ -71,6 +85,8 @@
     // A guest or an account without an entitlement is an expected state, not
     // a broken page. Keep the console clean and show the login modal below.
     console.warn('Кабінет очікує підтвердження доступу.', error);
+    var bootError = document.getElementById('cabinetLoginError');
+    if (bootError) { bootError.textContent = loadErrorMessage(error); bootError.style.display = 'block'; }
   }
 
   // Resolve the initial boot state before the full cabinet script starts.
@@ -94,9 +110,11 @@
       var button = document.querySelector('.login-submit');
       if (errorEl) { errorEl.style.display = 'none'; errorEl.textContent = ''; }
       if (button) button.disabled = true;
+      var stage = 'AUTH';
       try {
         var login = await window.startAmazonSupabase.auth.signInWithPassword({ email: email, password: password });
         if (login.error) throw login.error;
+        stage = 'ACCESS';
         var access = await window.startAmazonSupabase.rpc('has_active_course_access');
         if (access.error) {
           var accessError = new Error('access_check_failed');
@@ -107,6 +125,7 @@
           await window.startAmazonSupabase.auth.signOut();
           throw new Error('no_access');
         }
+        stage = 'CONTENT';
         var target = document.getElementById('cabinetContent');
         var contentFile;
         try {
@@ -117,12 +136,16 @@
           throw contentError;
         }
         target.innerHTML = await contentFile.text();
+        stage = 'PROGRESS';
         await hydrateProgress(login.data.session);
         localStorage.removeItem('sa_token');
         document.body.classList.remove('cabinet-guest');
         if (loginModal) loginModal.style.display = 'none';
+        stage = 'APP';
         await loadScript('cabinet.js?v=87');
       } catch (error) {
+        error.stage = stage;
+        console.warn('Cabinet loading failed at ' + stage, error);
         if (errorEl) {
           errorEl.style.display = 'block';
           errorEl.textContent = error.message === 'no_access'
@@ -132,7 +155,7 @@
               : error.message === 'content_load_failed'
                 ? 'Доступ підтверджено, але матеріали не завантажились. Спробуй ще раз.'
                 : error.code === 'invalid_credentials' ? 'Невірний email або пароль.'
-                  : 'Не вдалося завантажити кабінет. Перевір з’єднання та спробуй ще раз.';
+                  : loadErrorMessage(error);
         }
       } finally {
         if (button) button.disabled = false;
